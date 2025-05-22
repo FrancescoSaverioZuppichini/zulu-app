@@ -2,13 +2,15 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { useState, useRef, useEffect } from "react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { ChevronLeft, Send } from "lucide-react"
-import Link from "next/link"
+import { ChevronLeft, ImageIcon, Plus, Send } from "lucide-react"
+import { useRouter } from "next/navigation"
 import type { Contact } from "@/lib/types"
+import { useChat } from '@ai-sdk/react';
+import { cn } from "@/lib/utils"
 
 interface Message {
   id: string
@@ -22,87 +24,104 @@ interface MessageChatProps {
 }
 
 export function MessageChat({ contact }: MessageChatProps) {
-  const [messages, setMessages] = useState<Message[]>([])
-  const [newMessage, setNewMessage] = useState("")
+  const { messages, input, handleInputChange, handleSubmit } = useChat({});
+  const [showTimestamp, setShowTimestamp] = useState(true);
+  const messagesEndRef = useRef<HTMLDivElement>(null)
+  const router = useRouter()
 
-  const handleSendMessage = (e: React.FormEvent) => {
-    e.preventDefault()
+  // Scroll to bottom when messages change
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
+  }, [messages])
 
-    if (!newMessage.trim()) return
-
-    const message: Message = {
-      id: Date.now().toString(),
-      text: newMessage,
-      sent: true,
-      timestamp: new Date(),
-    }
-
-    setMessages([...messages, message])
-    setNewMessage("")
-
-    // Simulate a reply after 1 second
-    setTimeout(() => {
-      const reply: Message = {
-        id: (Date.now() + 1).toString(),
-        text: `Hey, this is an automated reply from ${contact.name}!`,
-        sent: false,
-        timestamp: new Date(),
-      }
-
-      setMessages((prev) => [...prev, reply])
-    }, 1000)
+  // Format time for message bubbles
+  const formatMessageTime = (date: Date) => {
+    return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
   }
 
   return (
-    <div className="flex flex-col h-full">
-      <div className="flex items-center p-4 border-b">
-        <Link href="/messages">
-          <Button variant="ghost" size="icon" className="mr-2">
-            <ChevronLeft className="h-5 w-5" />
-          </Button>
-        </Link>
-        <Avatar className="h-8 w-8 mr-2">
-          <AvatarImage src={contact.avatar || "/placeholder.svg"} alt={contact.name} />
-          <AvatarFallback>{contact.name.charAt(0)}</AvatarFallback>
-        </Avatar>
-        <h2 className="font-semibold">{contact.name}</h2>
+    <div className="flex flex-col h-full bg-white">
+      {/* Header */}
+      <div className="flex items-center p-2 border-b">
+        <Button variant="ghost" size="sm" onClick={() => router.push("/messages")} className="text-blue-500">
+          <ChevronLeft className="h-4 w-4 mr-1" />
+          <span>Messages</span>
+        </Button>
+        <div className="flex flex-col items-center mx-auto">
+          <h2 className="font-semibold">{contact.name}</h2>
+        </div>
       </div>
 
-      <div className="flex-1 overflow-auto p-4 space-y-4">
+      {/* Messages */}
+      <div className="flex-1 overflow-auto p-2 bg-gray-100">
         {messages.length === 0 ? (
-          <div className="flex items-center justify-center h-full text-gray-400">
-            No messages yet. Start a conversation!
+          <div className="flex flex-col items-center justify-center h-full text-gray-400 space-y-2 p-4">
+            <Avatar className="h-16 w-16 mb-2">
+              <AvatarImage src={contact.avatar || "/placeholder.svg"} alt={contact.name} />
+              <AvatarFallback>{contact.name.charAt(0)}</AvatarFallback>
+            </Avatar>
+            <h3 className="font-medium text-gray-700">{contact.name}</h3>
+            <p className="text-sm text-center mt-4">This is the beginning of your conversation with {contact.name}</p>
           </div>
         ) : (
-          messages.map((message) => (
-            <div
-              key={message.id}
-              className={
-                message.sent
-                  ? "bg-blue-500 text-white p-3 rounded-2xl rounded-tr-sm max-w-[80%] self-end"
-                  : "bg-gray-200 text-gray-800 p-3 rounded-2xl rounded-tl-sm max-w-[80%] self-start"
-              }
-            >
-              {message.text}
-              <div className="text-xs opacity-70 mt-1">
-                {message.timestamp.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+          messages.map(message => (
+            <div key={message.id} className="space-y-1 mb-4">
+              <div className="flex justify-center mb-2">
+                <div className="bg-gray-200 text-gray-500 text-xs px-2 py-1 rounded-full">
+                  {new Date(message.createdAt || Date.now()).toLocaleDateString([], { weekday: "short", month: "short", day: "numeric" })}
+                </div>
+              </div>
+
+              <div className={cn("flex", message.role === "user" ? "justify-end" : "justify-start")}>
+                <div
+                  className={`max-w-[80%] px-3 py-2 rounded-2xl ${message.role === "user" ? "bg-blue-500 text-white rounded-tr-sm" : "bg-gray-300 text-black rounded-tl-sm"
+                    }`}
+                >
+                  <p>{message.content}</p>
+                  {showTimestamp && (
+                    <div
+                      className={`text-[10px] ${message.role === "user" ? "text-blue-100" : "text-gray-500"} mt-1 text-right`}
+                    >
+                      {formatMessageTime(new Date(message.createdAt || Date.now()))}
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           ))
         )}
+        <div ref={messagesEndRef} />
       </div>
 
-      <form onSubmit={handleSendMessage} className="p-4 border-t flex gap-2">
-        <Input
-          value={newMessage}
-          onChange={(e) => setNewMessage(e.target.value)}
-          placeholder="Message"
-          className="flex-1"
-        />
-        <Button type="submit" size="icon" disabled={!newMessage.trim()}>
-          <Send className="h-5 w-5" />
-        </Button>
-      </form>
+      {/* Compose area */}
+      <div className="p-2 bg-gray-100 border-t">
+        <form onSubmit={handleSubmit} className="inline-flex items-center items-end bg-white rounded-full border border-gray-300 px-2">
+          <Button variant="ghost" size="icon" className="rounded-full h-8 w-8 text-blue-500">
+            <Plus className="h-5 w-5" />
+          </Button>
+          <Input
+            name="prompt"
+            value={input}
+            onChange={handleInputChange}
+            placeholder="iMessage"
+            className="border-none shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 h-10"
+          />
+          {input.trim() ? (
+            <Button
+              variant="ghost"
+              type="submit"
+              size="icon"
+              className="rounded-full h-8 w-8 text-blue-500"
+            >
+              <Send className="h-5 w-5" />
+            </Button>
+          ) : (
+            <Button variant="ghost" size="icon" className="rounded-full h-8 w-8 text-blue-500">
+              <ImageIcon className="h-4 w-4" />
+            </Button>
+          )}
+        </form>
+      </div>
     </div>
   )
 }
