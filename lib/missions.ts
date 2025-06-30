@@ -19,7 +19,7 @@ export const mamalPodMissions: Mission[] = [
         context: 'Devo potenziare le mie capacità di calcolo, prego portare alla base il banco RAM.',
         difficulty: 'Medium',
         hints: ['per compiere la missione portare il banco RAM alla base e posizionarlo nel riquadro stampato', 'Il banco RAM si trova nei pressi dello Strut C'],
-        success_criteria: 'Il giocatore invia la foto del banco RAM, una scatola grigia, posizionata sopra al foglio con i quadrati',
+        success_criteria: 'Il giocatore invia la foto del banco RAM, una scatola marrone, posizionata sopra al foglio con la cornice nera',
         required_missions: [] // Starting mission
     },
 
