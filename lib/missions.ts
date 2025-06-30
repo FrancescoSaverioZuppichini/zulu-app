@@ -118,6 +118,6 @@ export const mamalPodMissions: Mission[] = [
         context: 'Non lo capisco ancora ma è un simbolo legato a me.',
         difficulty: 'Medium',
         hints: ['Dovrebbe essere tra il campanile e lo Strut E.'],
-        success_criteria: 'Il giocatore invia una foto del fiore sul foglio con i riquadri',
+        success_criteria: 'Il giocatore invia una foto del fiore sul foglio con la cornice nera',
         required_missions: ['4a']
     }];
