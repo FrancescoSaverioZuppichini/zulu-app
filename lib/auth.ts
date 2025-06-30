@@ -1,8 +1,10 @@
-import type { NextAuthOptions } from "next-auth"
-import CredentialsProvider from "next-auth/providers/credentials"
-import { validUsernames } from "./data"
+import type { NextAuthOptions } from "next-auth";
+import CredentialsProvider from "next-auth/providers/credentials";
+import { validUsernames } from "./data";
+import { env } from "@/env";
 
 export const authOptions: NextAuthOptions = {
+
   providers: [
     CredentialsProvider({
       name: "Credentials",
@@ -12,23 +14,23 @@ export const authOptions: NextAuthOptions = {
       },
       async authorize(credentials) {
         if (!credentials?.username || !credentials?.password) {
-          return null
+          return null;
         }
 
         // Check if the username is in our valid usernames list
-        const isValidUsername = validUsernames.includes(credentials.username)
+        const isValidUsername = validUsernames.includes(credentials.username);
 
         // Check if the password matches our environment variable
-        const isValidPassword = credentials.password === process.env.APP_PASSWORD
+        const isValidPassword = credentials.password === env.APP_PASSWORD;
 
         if (isValidUsername && isValidPassword) {
           return {
             id: credentials.username,
             name: credentials.username,
-          }
+          };
         }
 
-        return null
+        return null;
       },
     }),
   ],
@@ -43,18 +45,17 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.id = user.id
-        token.name = user.name
+        token.id = user.id;
+        token.name = user.name;
       }
-      return token
+      return token;
     },
     async session({ session, token }) {
       if (token && session.user) {
-        session.user.id = token.id as string
-        session.user.name = token.name as string
+        session.user.name = token.name as string;
       }
-      return session
+      return session;
     },
   },
-  secret: process.env.NEXTAUTH_SECRET,
-}
+  secret: env.AUTH_SECRET,
+};

@@ -1,19 +1,38 @@
-"use client"
+"use client";
 
-import { useContacts } from "@/providers/contacts-provider"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Button } from "@/components/ui/button"
-import { ChevronLeft, MessageSquare } from "lucide-react"
-import Link from "next/link"
-import { useRouter } from "next/navigation"
+import { useContacts } from "@/providers/contacts-provider";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { ChevronLeft, MessageSquare } from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
+import { useTransition } from "react";
+import { createChat } from "@/lib/actions";
 
 export function ContactsList() {
-  const { contacts } = useContacts()
-  const router = useRouter()
+  const { contacts } = useContacts();
 
-  const startChat = (contactId: string) => {
-    router.push(`/messages/${contactId}`)
+  const [pending, startTransition] = useTransition();
+  const router = useRouter();
+
+  const { data: session } = useSession();
+
+  if (!session?.user?.name) {
+    router.push("/");
+    return;
   }
+  const selectContact = (contactId: string) => {
+    startTransition(async () => {
+      if (session?.user) {
+        const chatId = await createChat(
+          session.user.name || "unkown",
+          contactId
+        );
+        router.push(`/home/messages/${contactId}`);
+      }
+    });
+  };
 
   return (
     <div className="flex flex-col h-full">
@@ -28,10 +47,16 @@ export function ContactsList() {
 
       <div className="flex-1 overflow-auto">
         {contacts.map((contact) => (
-          <div key={contact.id} className="flex items-center justify-between p-4 hover:bg-gray-100 transition-colors">
+          <div
+            key={contact.id}
+            className="flex items-center justify-between p-4 hover:bg-gray-100 transition-colors"
+          >
             <div className="flex items-center">
               <Avatar className="h-12 w-12 mr-4">
-                <AvatarImage src={contact.avatar || "/placeholder.svg"} alt={contact.name} />
+                <AvatarImage
+                  src={contact.avatar || "/placeholder.svg"}
+                  alt={contact.name}
+                />
                 <AvatarFallback>{contact.name.charAt(0)}</AvatarFallback>
               </Avatar>
               <div>
@@ -42,7 +67,7 @@ export function ContactsList() {
             <Button
               variant="ghost"
               size="icon"
-              onClick={() => startChat(contact.id)}
+              onClick={() => selectContact(contact.id)}
               aria-label={`Chat with ${contact.name}`}
             >
               <MessageSquare className="h-5 w-5 text-blue-500" />
@@ -51,5 +76,5 @@ export function ContactsList() {
         ))}
       </div>
     </div>
-  )
+  );
 }

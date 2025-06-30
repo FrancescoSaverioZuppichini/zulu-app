@@ -9,7 +9,7 @@ export async function middleware(request: NextRequest) {
   })
 
   // Define protected paths that require authentication
-  const protectedPaths = ["/home", "/messages", "/contacts"]
+  const protectedPaths = ["/home", "/home/messages", "/home/contacts"]
 
   // Check if the path is protected
   const isProtectedPath = protectedPaths.some(
@@ -33,5 +33,5 @@ export async function middleware(request: NextRequest) {
 
 // Configure the middleware to run on specific paths
 export const config = {
-  matcher: ["/", "/home", "/messages/:path*", "/contacts/:path*"],
+  matcher: ["/", "/home", "/home/messages/:path*", "/home/contacts/:path*"],
 }

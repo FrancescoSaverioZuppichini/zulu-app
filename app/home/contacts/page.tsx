@@ -1,11 +1,11 @@
-import { AppGrid } from "@/components/phone/app-grid";
 import { PhoneContainer } from "@/components/phone/phone-container";
 import { StatusBar } from "@/components/phone/status-bar";
 import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
+import { ContactsList } from "@/components/contacts/contacts-list";
 
-export default async function HomePage() {
+export default async function ContactsPage() {
   const session = await getServerSession(authOptions);
 
   if (!session) {
@@ -17,7 +17,7 @@ export default async function HomePage() {
       <PhoneContainer>
         <div className="flex flex-col h-full">
           <StatusBar />
-          <AppGrid />
+          <ContactsList />
         </div>
       </PhoneContainer>
     </main>
