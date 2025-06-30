@@ -1,4 +1,5 @@
 import { createMissionSchema } from "@/lib/schemas";
+import { Message } from "ai";
 import { z } from "zod";
 
 export type Mission = z.infer<typeof createMissionSchema>;
@@ -19,5 +20,5 @@ export type ChatPreview = {
 }
 
 export type Chat = ChatPreview & {
-  messages: string[]
+  messages: Message[]
 }

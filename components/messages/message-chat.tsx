@@ -13,6 +13,7 @@ import { useChat } from "@ai-sdk/react";
 import { cn } from "@/lib/utils";
 import Message from "./message";
 import { text } from "stream/consumers";
+import { Chat } from "@/types/types";
 
 interface Message {
   id: string;
@@ -22,11 +23,13 @@ interface Message {
 }
 
 interface MessageChatProps {
+  chat: Chat;
   contact: Contact;
 }
 
-export function MessageChat({ contact }: MessageChatProps) {
-  const { messages, input, handleInputChange, handleSubmit, append } = useChat({
+export function MessageChat({ chat, contact }: MessageChatProps) {
+  const { messages, input, handleInputChange, handleSubmit } = useChat({
+    initialMessages: chat.messages,
     api: `/api/chat/${contact.id}`,
   });
   const [showTimestamp, setShowTimestamp] = useState(true);
@@ -68,9 +71,9 @@ export function MessageChat({ contact }: MessageChatProps) {
   };
 
   const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    console.log("hey");
     handleSubmit(event, {
       experimental_attachments: files,
+      allowEmptySubmit: true,
     });
 
     setFiles(undefined);

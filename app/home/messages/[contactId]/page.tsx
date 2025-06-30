@@ -33,7 +33,7 @@ export default async function ChatPage({
     <main className="grid min-h-screen ">
       <div className="flex flex-col h-full">
         <StatusBar />
-        <MessageChat contact={contact} />
+        <MessageChat chat={chat} contact={contact} />
       </div>
     </main>
   );
