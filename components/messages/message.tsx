@@ -1,16 +1,12 @@
 import { cn } from "@/lib/utils";
 import { UIMessage } from "ai";
+import { MemoizedMarkdown } from "./memoized-markdown";
 
 const formatMessageTime = (date: Date) => {
   return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 };
 
 export default function Message({ message }: { message: UIMessage }) {
-  console.log(message);
-
-  const hasAttachments =
-    message.experimental_attachments &&
-    message.experimental_attachments.length > 0;
   const imageAttachments =
     message.experimental_attachments?.filter((attachment) =>
       attachment.contentType?.startsWith("image/")
@@ -58,7 +54,9 @@ export default function Message({ message }: { message: UIMessage }) {
           )}
 
           {/* Text content */}
-          {message.content && <p>{message.content}</p>}
+          {message.content && (
+            <MemoizedMarkdown content={message.content} id={message.id} />
+          )}
 
           <div
             className={`text-[10px] ${

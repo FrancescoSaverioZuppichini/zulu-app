@@ -28,10 +28,11 @@ interface MessageChatProps {
 }
 
 export function MessageChat({ chat, contact }: MessageChatProps) {
-  const { messages, input, handleInputChange, handleSubmit } = useChat({
-    initialMessages: chat.messages,
-    api: `/api/chat/${contact.id}`,
-  });
+  const { messages, input, handleInputChange, handleSubmit, status, error } =
+    useChat({
+      initialMessages: chat.messages,
+      api: `/api/chat/${contact.id}`,
+    });
   const [showTimestamp, setShowTimestamp] = useState(true);
   const [files, setFiles] = useState<FileList | undefined>(undefined);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -123,6 +124,13 @@ export function MessageChat({ chat, contact }: MessageChatProps) {
             <Message message={message} key={message.id} />
           ))
         )}
+        {status === "submitted" && (
+          <div className="max-w-[80%] px-3 py-2 rounded-2xl text-gray-500 rounded-tl-sm">
+            <span className="inline-block overflow-hidden whitespace-nowrap animate-[typing_1s_infinite]">
+              typing...
+            </span>
+          </div>
+        )}
         <div ref={messagesEndRef} />
       </div>
 
@@ -166,6 +174,7 @@ export function MessageChat({ chat, contact }: MessageChatProps) {
             name="prompt"
             value={input}
             onChange={handleInputChange}
+            disabled={status === "submitted"}
             placeholder="iMessage"
             className="border-none shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 h-10 grow"
           />
@@ -175,6 +184,7 @@ export function MessageChat({ chat, contact }: MessageChatProps) {
               type="submit"
               size="icon"
               className="rounded-full h-8 w-8 text-blue-500"
+              disabled={status === "submitted"}
             >
               <Send className="h-4 w-4" />
             </Button>
@@ -185,6 +195,7 @@ export function MessageChat({ chat, contact }: MessageChatProps) {
               size="icon"
               type="button"
               onClick={handleImageButtonClick}
+              disabled={status === "submitted"}
               className="rounded-full h-8 w-8 text-blue-500"
             >
               <ImageIcon className="h-4 w-4" />

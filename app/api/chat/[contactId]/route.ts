@@ -1,4 +1,4 @@
-import { saveUserChat } from "@/lib/crud";
+import { getUserMission, saveUserChat } from "@/lib/crud";
 import { personas } from "@/lib/personas";
 import { createPersonaSystemPrompt } from "@/lib/prompts";
 import { tools } from "@/lib/tools";
@@ -18,13 +18,17 @@ export async function POST(
   const session = await getServerSession()
   if (!session?.user) return NextResponse.json({ error: "Unauthorize" }, { status: 403 })
   const { contactId } = await params;
+  const userId = session.user.name || "unknown"
+
+  const missions = await getUserMission(userId, contactId)
+  console.log("user missions", missions)
 
   const result = streamText({
     system: createPersonaSystemPrompt(personas[contactId]),
-    maxSteps: 3,
+    maxSteps: 6,
     model: google("gemini-2.5-flash-preview-04-17"),
     messages,
-    tools,
+    tools: tools(userId, contactId, missions),
     async onFinish({ response }) {
       await saveUserChat(
         session?.user?.name || "unknown",
