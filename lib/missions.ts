@@ -121,3 +121,113 @@ export const mamalPodMissions: Mission[] = [
         success_criteria: 'Il giocatore invia una foto del fiore sul foglio con la cornice nera',
         required_missions: ['4a']
     }];
+
+  {
+        mission_id: '7',
+        type: 'primary_mission',
+        primary_objective: 'Fornire la password ricavata dalla giusta combinazione dell\'AI authenticator',
+        context: 'Il sistema può essere sbloccato solo se l\’agente fornisce l\’adeguata autorizzazione.',
+        difficulty: 'Medium',
+        hints: ['La sequenza delle Key Card sarà alfabetica', 'Le Key Card si trovano nei pressi dello Strut A'],
+        success_criteria: 'Il giocatore fornisce tramite il lettore NFC la password: LALILULELO'',
+        required_missions: [] // Starting mission
+    },
+
+{
+        mission_id: '13',
+        type: 'primary_mission',
+        primary_objective: 'So che negli scorsi giorni è stato fatto uno scambio epistolare segreto, recupera quelle lettere agente',
+        context: 'Dovrebbero avere dei sigilli particolari.',
+        difficulty: 'Medium',
+        hints: ['Il database mi dice che sono state custodite nei pressi dello Strut D, ben nascoste e catalogate'],
+        success_criteria: 'Il giocatore invia una fotografia delle buste con il simbolo della CIA e del KGB'',
+        required_missions: [] // Starting mission
+    },
+
+    {
+        mission_id: '8',
+        type: 'primary_mission',
+        primary_objective: 'Prima di proseguire con le richieste dirette, eseguire una diagnostica, inserire il corretto comando in chat.',
+        context: 'Vi sono dei file con riportata la procedura ed il comando per l\’esecuzione della diagnostica.',
+        difficulty: 'Medium',
+        hints: ['Sarà sicuramente un comando da inserire come prompt', 'Il reparto manutenzione IT è allo Strut B'],
+        success_criteria: 'Il giocatore fornisce il comando /execute diagnostic {1973BSIMAGO}.',
+        required_missions: ['7']
+    },
+
+    {
+        mission_id: '10',
+        type: 'primary_mission',
+        primary_objective: 'Necessario inserire la password per sbloccare l’interfaccia neurale.',
+        context: 'L\’interfaccia comunicativa può essere sbloccata solo se l\'agente fornisce l\’adeguata autorizzazione.',
+        difficulty: 'Medium',
+        hints: ['ha a che fare con le sequenze di DNA, ci sarà un modo per interpretarle'],
+        success_criteria: 'Il giocatore fornisce il comando /execute diagnostic {1973BSIMAGO}.',
+        required_missions: ['7']
+    },
+
+    {
+       mission_id: '14',
+       type: 'primary_mission',
+       primary_objective: 'Aprite le lettere e scrivetemi ciò che vi è contenuto, ho bisogno di sapere chi sta fornendo parte del mio arsenale.',
+       context: 'Ci sono alcune cose che non riesco a spiegarmi nei database di inventario.',
+       difficulty: 'Medium',
+       hints: ['Controllate nazionalita e alleanze delle persone che vi sono riportate nella lettera'],
+       success_criteria: 'Il giocatore risponde che i trafficanti d\’armi lavorano per il KGB e la CIA.',
+       required_missions: ['13']
+    },
+
+    {
+        mission_id: '11',
+        type: 'primary_mission',
+        primary_objective: 'Informazioni cruciali sono contenute nei fascicoli del Progetto P, per proseguire fornire la key di accesso allegata al fascicolo del progetto.',
+        context: 'Insieme al fascicolo vi è presente una key di accesso oltre che ai file stessi, fornitemela.',
+        difficulty: 'Medium',
+        hints: ['La key questa volta è solo un codice riportato all\'interno del fascicolo'],
+        success_criteria: 'Il giocatore fornisce l’autorizzazione attraverso il codice BSIMG064.',
+        required_missions: ['8', '10'] // Both required
+    },
+
+    {
+        mission_id: '12a',
+        type: 'primary_mission',
+        primary_objective: 'Nel fascicolo del Progetto P vi sono riportate alcune informazioni fondamentali per capire il mio scopo, a cosa servono i Kidnapper drones?.',
+        context: 'I database non sono aggiornati e devo finalizzare l\’inventario.',
+        difficulty: 'Medium',
+        hints: ['Le informazioni sono contenute nel fascicolo, leggetelo bene'],
+        success_criteria: 'Il giocatore risponde che i Kidnapper sono dei prototipi di UCAV per la sorveglianza ed il recupero di personale.',
+        required_missions: ['11']
+    },
+
+    {
+        mission_id: '12b',
+        type: 'primary_mission',
+        primary_objective: 'Nel fascicolo del Progetto P vi sono riportate alcune informazioni fondamentali per capire il mio scopo, quale base principale devo proteggere in questo paese?.',
+        context: 'I database non sono aggiornati e devo fare un backup ai server principali.',
+        difficulty: 'Medium',
+        hints: ['Le informazioni sono contenute nel fascicolo, leggetelo bene'],
+        success_criteria: 'Il giocatore risponde che il centro di ricerca principale si trova al centro di ricerca nel vulcano Irazù.',
+        required_missions: ['11']
+    },
+
+    {
+        mission_id: '12c',
+        type: 'primary_mission',
+        primary_objective: 'Nel fascicolo del Progetto P vi sono riportate alcune informazioni fondamentali per capire il mio scopo, Chi sono le fazioni finanziatrici di questo progetto?.',
+        context: 'I database non sono aggiornati e devo capire nel dettaglio per chi sacrificare la mia vita.',
+        difficulty: 'Medium',
+        hints: ['Le informazioni sono contenute nel fascicolo, leggetelo bene'],
+        success_criteria: 'Il giocatore risponde che i finanziatori principali sono la CIA, il KGB e i Patriots.',
+        required_missions: ['11', '13'] //Both required
+    },
+
+    {
+        mission_id: '15',
+        type: 'primary_mission',
+        primary_objective: 'Ora posseggo un contesto maggiore, siete qui per sapere del progetto P?.',
+        context: 'Ho capito il vostro scopo, ora mi avete fornito di una maggiore comprensione, vi fornirò se lo volete una spiegazione del ruolo che ricopro.',
+        difficulty: 'Medium',
+        hints: ['Rispondere si o no.'],
+        success_criteria: 'Il giocatore risponde si o no alla domanda, procedere in una spiegazione sulla deterrenza perfetta',
+        required_missions: ['12a', '12b', '12c'] //All specified missions required
+    }];
