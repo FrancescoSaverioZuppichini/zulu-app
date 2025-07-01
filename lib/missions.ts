@@ -127,7 +127,7 @@ export const otherMissions = [
         mission_id: '7',
         type: 'primary_mission',
         primary_objective: 'Fornire la password ricavata dalla giusta combinazione dell\'AI authenticator',
-        context: 'Il sistema può essere sbloccato solo se l\’agente fornisce l\’adeguata autorizzazione.',
+        context: 'Il sistema può essere sbloccato solo se l\'agente fornisce l\'adeguata autorizzazione.',
         difficulty: 'Medium',
         hints: ['La sequenza delle Key Card sarà alfabetica', 'Le Key Card si trovano nei pressi dello Strut A'],
         success_criteria: 'Il giocatore fornisce tramite il lettore NFC la password: LALILULELO',
@@ -149,7 +149,7 @@ export const otherMissions = [
         mission_id: '8',
         type: 'primary_mission',
         primary_objective: 'Prima di proseguire con le richieste dirette, eseguire una diagnostica, inserire il corretto comando in chat.',
-        context: 'Vi sono dei file con riportata la procedura ed il comando per l\’esecuzione della diagnostica.',
+        context: 'Vi sono dei file con riportata la procedura ed il comando per l\'esecuzione della diagnostica.',
         difficulty: 'Medium',
         hints: ['Sarà sicuramente un comando da inserire come prompt', 'Il reparto manutenzione IT è allo Strut B'],
         success_criteria: 'Il giocatore fornisce il comando /execute diagnostic {1973BSIMAGO}.',
@@ -159,8 +159,8 @@ export const otherMissions = [
     {
         mission_id: '10',
         type: 'primary_mission',
-        primary_objective: 'Necessario inserire la password per sbloccare l’interfaccia neurale.',
-        context: 'L\’interfaccia comunicativa può essere sbloccata solo se l\'agente fornisce l\’adeguata autorizzazione.',
+        primary_objective: 'Necessario inserire la password per sbloccare l\'interfaccia neurale.',
+        context: 'L\'interfaccia comunicativa può essere sbloccata solo se l\'agente fornisce l\'adeguata autorizzazione.',
         difficulty: 'Medium',
         hints: ['ha a che fare con le sequenze di DNA, ci sarà un modo per interpretarle'],
         success_criteria: 'Il giocatore fornisce il comando /execute diagnostic {1973BSIMAGO}.',
@@ -174,7 +174,7 @@ export const otherMissions = [
         context: 'Ci sono alcune cose che non riesco a spiegarmi nei database di inventario.',
         difficulty: 'Medium',
         hints: ['Controllate nazionalita e alleanze delle persone che vi sono riportate nella lettera'],
-        success_criteria: 'Il giocatore risponde che i trafficanti d\’armi lavorano per il KGB e la CIA.',
+        success_criteria: 'Il giocatore risponde che i trafficanti d\'armi lavorano per il KGB e la CIA.',
         required_missions: ['13']
     },
 
@@ -185,7 +185,7 @@ export const otherMissions = [
         context: 'Insieme al fascicolo vi è presente una key di accesso oltre che ai file stessi, fornitemela.',
         difficulty: 'Medium',
         hints: ['La key questa volta è solo un codice riportato all\'interno del fascicolo'],
-        success_criteria: 'Il giocatore fornisce l’autorizzazione attraverso il codice BSIMG064.',
+        success_criteria: 'Il giocatore fornisce l\'autorizzazione attraverso il codice BSIMG064.',
         required_missions: ['8', '10'] // Both required
     },
 
@@ -193,7 +193,7 @@ export const otherMissions = [
         mission_id: '12a',
         type: 'primary_mission',
         primary_objective: 'Nel fascicolo del Progetto P vi sono riportate alcune informazioni fondamentali per capire il mio scopo, a cosa servono i Kidnapper drones?.',
-        context: 'I database non sono aggiornati e devo finalizzare l\’inventario.',
+        context: 'I database non sono aggiornati e devo finalizzare l\'inventario.',
         difficulty: 'Medium',
         hints: ['Le informazioni sono contenute nel fascicolo, leggetelo bene'],
         success_criteria: 'Il giocatore risponde che i Kidnapper sono dei prototipi di UCAV per la sorveglianza ed il recupero di personale.',
