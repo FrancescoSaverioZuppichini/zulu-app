@@ -122,25 +122,26 @@ export const mamalPodMissions: Mission[] = [
         required_missions: ['4a']
     }];
 
-  {
+export const otherMissions = [
+    {
         mission_id: '7',
         type: 'primary_mission',
         primary_objective: 'Fornire la password ricavata dalla giusta combinazione dell\'AI authenticator',
         context: 'Il sistema può essere sbloccato solo se l\’agente fornisce l\’adeguata autorizzazione.',
         difficulty: 'Medium',
         hints: ['La sequenza delle Key Card sarà alfabetica', 'Le Key Card si trovano nei pressi dello Strut A'],
-        success_criteria: 'Il giocatore fornisce tramite il lettore NFC la password: LALILULELO'',
+        success_criteria: 'Il giocatore fornisce tramite il lettore NFC la password: LALILULELO',
         required_missions: [] // Starting mission
     },
 
-{
+    {
         mission_id: '13',
         type: 'primary_mission',
         primary_objective: 'So che negli scorsi giorni è stato fatto uno scambio epistolare segreto, recupera quelle lettere agente',
         context: 'Dovrebbero avere dei sigilli particolari.',
         difficulty: 'Medium',
         hints: ['Il database mi dice che sono state custodite nei pressi dello Strut D, ben nascoste e catalogate'],
-        success_criteria: 'Il giocatore invia una fotografia delle buste con il simbolo della CIA e del KGB'',
+        success_criteria: 'Il giocatore invia una fotografia delle buste con il simbolo della CIA e del KGB',
         required_missions: [] // Starting mission
     },
 
@@ -167,14 +168,14 @@ export const mamalPodMissions: Mission[] = [
     },
 
     {
-       mission_id: '14',
-       type: 'primary_mission',
-       primary_objective: 'Aprite le lettere e scrivetemi ciò che vi è contenuto, ho bisogno di sapere chi sta fornendo parte del mio arsenale.',
-       context: 'Ci sono alcune cose che non riesco a spiegarmi nei database di inventario.',
-       difficulty: 'Medium',
-       hints: ['Controllate nazionalita e alleanze delle persone che vi sono riportate nella lettera'],
-       success_criteria: 'Il giocatore risponde che i trafficanti d\’armi lavorano per il KGB e la CIA.',
-       required_missions: ['13']
+        mission_id: '14',
+        type: 'primary_mission',
+        primary_objective: 'Aprite le lettere e scrivetemi ciò che vi è contenuto, ho bisogno di sapere chi sta fornendo parte del mio arsenale.',
+        context: 'Ci sono alcune cose che non riesco a spiegarmi nei database di inventario.',
+        difficulty: 'Medium',
+        hints: ['Controllate nazionalita e alleanze delle persone che vi sono riportate nella lettera'],
+        success_criteria: 'Il giocatore risponde che i trafficanti d\’armi lavorano per il KGB e la CIA.',
+        required_missions: ['13']
     },
 
     {
