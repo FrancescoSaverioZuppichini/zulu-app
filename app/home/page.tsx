@@ -13,13 +13,11 @@ export default async function HomePage() {
   }
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-4 md:p-24">
-      <PhoneContainer>
-        <div className="flex flex-col h-full">
-          <StatusBar />
-          <AppGrid />
-        </div>
-      </PhoneContainer>
+    <main className="grid min-h-screen flex-col ">
+      <div className="flex flex-col h-full">
+        <StatusBar />
+        <AppGrid />
+      </div>
     </main>
   );
 }

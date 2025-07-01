@@ -9,7 +9,7 @@ export function AppGrid() {
         {/* App Icons Grid */}
         <div className="grid grid-cols-4 gap-4  w-full max-w-md mx-auto mt-4">
           <Link href="/home/messages">
-            <div className="flex flex-col items-center">
+            <div className="flex flex-col items-center ">
               <div className="flex items-center justify-center aspect-square w-full rounded-2xl bg-gradient-to-b from-green-400 to-green-600 shadow-md">
                 <MessageSquare className="h-8 w-8 text-white" />
               </div>

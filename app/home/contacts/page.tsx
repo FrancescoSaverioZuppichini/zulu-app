@@ -13,13 +13,9 @@ export default async function ContactsPage() {
   }
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-4 md:p-24">
-      <PhoneContainer>
-        <div className="flex flex-col h-full">
-          <StatusBar />
-          <ContactsList />
-        </div>
-      </PhoneContainer>
-    </main>
+    <div className="flex flex-col h-full">
+      <StatusBar />
+      <ContactsList />
+    </div>
   );
 }

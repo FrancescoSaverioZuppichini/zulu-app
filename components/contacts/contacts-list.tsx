@@ -22,6 +22,7 @@ export function ContactsList() {
     router.push("/");
     return;
   }
+
   const selectContact = (contactId: string) => {
     startTransition(async () => {
       if (session?.user) {
