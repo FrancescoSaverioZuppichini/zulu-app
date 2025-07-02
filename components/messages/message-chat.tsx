@@ -2,7 +2,7 @@
 
 import type React from "react";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useTransition } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,6 +14,8 @@ import { cn } from "@/lib/utils";
 import Message from "./message";
 import { text } from "stream/consumers";
 import { Chat } from "@/types/types";
+import { User } from "next-auth";
+import { resetUserChat } from "@/lib/actions";
 
 interface Message {
   id: string;
@@ -25,9 +27,10 @@ interface Message {
 interface MessageChatProps {
   chat: Chat;
   contact: Contact;
+  userId: string;
 }
 
-export function MessageChat({ chat, contact }: MessageChatProps) {
+export function MessageChat({ chat, contact, userId }: MessageChatProps) {
   const { messages, input, handleInputChange, handleSubmit, status, error } =
     useChat({
       initialMessages: chat.messages,
@@ -35,6 +38,7 @@ export function MessageChat({ chat, contact }: MessageChatProps) {
     });
   const [showTimestamp, setShowTimestamp] = useState(true);
   const [files, setFiles] = useState<FileList | undefined>(undefined);
+  const [pending, startTransaction] = useTransition();
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -49,6 +53,12 @@ export function MessageChat({ chat, contact }: MessageChatProps) {
     fileInputRef.current?.click();
   };
 
+  const handleClearOnClick = () => {
+    startTransaction(async () => {
+      await resetUserChat(userId, contact.id);
+      router.refresh();
+    });
+  };
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
       const file = event.target.files[0];
@@ -209,6 +219,11 @@ export function MessageChat({ chat, contact }: MessageChatProps) {
             style={{ display: "none" }}
           />
         </form>
+        <div className="flex justify-center items-center w-full">
+          <Button variant={"destructive"} onClick={handleClearOnClick}>
+            Clear
+          </Button>
+        </div>
       </div>
     </div>
   );

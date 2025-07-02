@@ -1,11 +1,10 @@
 import { PhoneContainer } from "@/components/phone/phone-container";
 import { StatusBar } from "@/components/phone/status-bar";
 import { getContactById } from "@/lib/data";
-import { authOptions } from "@/lib/auth";
-import { getServerSession } from "next-auth";
 import { notFound, redirect } from "next/navigation";
 import { MessageChat } from "@/components/messages/message-chat";
 import { getUserChat } from "@/lib/crud";
+import { auth } from "@/lib/auth";
 
 export default async function ChatPage({
   params,
@@ -14,7 +13,7 @@ export default async function ChatPage({
 }) {
   const { contactId } = await params;
 
-  const session = await getServerSession(authOptions);
+  const session = await auth();
 
   if (!session) {
     redirect("/");
@@ -33,7 +32,11 @@ export default async function ChatPage({
     <main className="grid min-h-screen ">
       <div className="flex flex-col h-full">
         <StatusBar />
-        <MessageChat chat={chat} contact={contact} />
+        <MessageChat
+          chat={chat}
+          contact={contact}
+          userId={session?.user?.name || "unkown"}
+        />
       </div>
     </main>
   );

@@ -8,7 +8,6 @@ export type Persona = {
   name: string;
   description: string;
   guidelines: string[];
-  missions: Mission[];
   interaction: string;
   initialization?: string;
 };

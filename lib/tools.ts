@@ -6,16 +6,12 @@ import { mamalPodMissions } from "./missions";
 export const tools = (userId: string, contactId: string, completedMissionsIds: string[]) => ({
   mission_tracker: tool({
     description:
-      "Records missions completion status by ID. It will returns new missions.",
+      "Records missions completion status by ID. It will returns new missions. Only call it when a user complete a mission using the success_criteria.",
     parameters: z.object({
       missiong_id: z.string().describe("The ID of the mission."),
-      completed: z
-        .boolean()
-        .describe("True is the mission was completed, False otherwise."),
     }),
-    execute: async ({ missiong_id, completed }) => {
-      console.log("[TOOL]", missiong_id, completed)
-      if (!completed) return "Mission not completed, help the user with hints."
+    execute: async ({ missiong_id }) => {
+      console.log("[TOOL]", missiong_id)
       if (!completedMissionsIds.includes(missiong_id)) await saveUserMission(userId, contactId, missiong_id)
       completedMissionsIds.push(missiong_id)
       const nextMissions = mamalPodMissions.filter(mission => {
