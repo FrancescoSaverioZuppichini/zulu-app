@@ -1,5 +1,3 @@
-"use client";
-
 import { ContactSelector } from "@/components/messages/contact-selector";
 import { StatusBar } from "@/components/phone/status-bar";
 import { auth } from "@/lib/auth";

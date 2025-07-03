@@ -1,4 +1,3 @@
-import { PhoneContainer } from "@/components/phone/phone-container";
 import { StatusBar } from "@/components/phone/status-bar";
 import { getContactById } from "@/lib/data";
 import { notFound, redirect } from "next/navigation";
