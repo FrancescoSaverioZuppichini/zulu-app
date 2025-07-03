@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { signOut } from "@/lib/auth";
 
+export const runtime = "edge";
 export default function SignOutPage() {
   return (
     <div className="p-6 flex items-center w-full justify-center">

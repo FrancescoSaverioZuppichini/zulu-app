@@ -7,6 +7,8 @@ export const runtime = "edge";
 export default async function NewMessagePage() {
   const session = await auth();
 
+  console.log("NewMessagePage", session);
+
   if (!session?.user) {
     redirect("/");
   }

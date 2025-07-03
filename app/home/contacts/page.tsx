@@ -8,6 +8,7 @@ export const runtime = "edge";
 
 export default async function ContactsPage() {
   const session = await auth();
+  console.log("ContactsPage", session);
 
   if (!session?.user) {
     redirect("/");
