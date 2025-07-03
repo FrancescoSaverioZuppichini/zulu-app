@@ -2,9 +2,16 @@
 
 import { ContactSelector } from "@/components/messages/contact-selector";
 import { StatusBar } from "@/components/phone/status-bar";
+import { auth } from "@/lib/auth";
+import { redirect } from "next/navigation";
 
 export const runtime = "edge";
-export default function NewMessagePage() {
+export default async function NewMessagePage() {
+  const session = await auth();
+
+  if (!session?.user) {
+    redirect("/");
+  }
   return (
     <div className="grid flex-col h-full">
       <StatusBar />
