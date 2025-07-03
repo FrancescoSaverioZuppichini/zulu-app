@@ -5,6 +5,7 @@ import { auth } from "@/lib/auth";
 import { MessagesList } from "@/components/messages/messages-list";
 import { getUserChats } from "@/lib/crud";
 
+export const runtime = "edge";
 export default async function MessagesPage() {
   const session = await auth();
 

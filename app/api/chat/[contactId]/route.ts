@@ -11,6 +11,7 @@ import { Mission } from "@/types/types";
 import { missions } from "@/lib/missions";
 import { auth } from "@/lib/auth";
 
+export const runtime = 'edge'
 
 export const maxDuration = 30;
 
