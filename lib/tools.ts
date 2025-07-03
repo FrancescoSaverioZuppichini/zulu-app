@@ -1,7 +1,7 @@
 import { tool } from "ai";
 import z from "zod";
 import { saveUserMission } from "./crud";
-import { mamalPodMissions } from "./missions";
+import { missions } from "./missions";
 
 export const tools = (userId: string, contactId: string, completedMissionsIds: string[]) => ({
   mission_tracker: tool({
@@ -11,17 +11,18 @@ export const tools = (userId: string, contactId: string, completedMissionsIds: s
       missiong_id: z.string().describe("The ID of the mission."),
     }),
     execute: async ({ missiong_id }) => {
+      const userMissions = missions[userId]
       console.log("[TOOL]", missiong_id)
       if (!completedMissionsIds.includes(missiong_id)) await saveUserMission(userId, contactId, missiong_id)
       completedMissionsIds.push(missiong_id)
-      const nextMissions = mamalPodMissions.filter(mission => {
+      const nextMissions = userMissions.filter(mission => {
         if (mission.required_missions.length === 0) return false
         return mission.required_missions.every(requiredId =>
           completedMissionsIds.includes(requiredId)
         );
       });
       console.log("[TOOL]", nextMissions)
-      if (completedMissionsIds.length === mamalPodMissions.length) return "All missions done, congratulate to the user and tell him all the missions are completed."
+      if (completedMissionsIds.length === userMissions.length) return "All missions done, congratulate to the user and tell him all the missions are completed."
       return nextMissions
     },
   }),

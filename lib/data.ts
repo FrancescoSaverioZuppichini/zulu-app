@@ -1,7 +1,7 @@
 import type { Contact } from "./types"
 
 // List of valid usernames that can log in
-export const validUsernames = ["gnps", "fsln", "admin"]
+export const validUsernames = ["gnps", "fsln", "test", "admin"]
 
 // Hardcoded contacts data
 export const contacts: Contact[] = [

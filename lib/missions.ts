@@ -163,7 +163,7 @@ export const missions: Record<string, Mission[]> = {
             context: 'L\'interfaccia comunicativa può essere sbloccata solo se l\'agente fornisce l\'adeguata autorizzazione.',
             difficulty: 'Medium',
             hints: ['ha a che fare con le sequenze di DNA, ci sarà un modo per interpretarle'],
-            success_criteria: 'Il giocatore fornisce il comando /execute diagnostic {1973BSIMAGO}.',
+            success_criteria: 'Il giocatore fornisce la sequenza: I853XNCC',
             required_missions: ['7']
         },
 
@@ -231,5 +231,39 @@ export const missions: Record<string, Mission[]> = {
             hints: ['Rispondere si o no.'],
             success_criteria: 'Il giocatore risponde si o no alla domanda, procedere in una spiegazione sulla deterrenza perfetta',
             required_missions: ['12a', '12b', '12c'] //All specified missions required
-        }]
+        }],
+    "test": [
+        {
+            mission_id: 'debug_1',
+            type: 'primary_mission',
+            primary_objective: 'Enter the debug authorization key to unlock system testing mode.',
+            context: 'System requires basic authentication before running diagnostic protocols.',
+            difficulty: 'Easy',
+            hints: ['The key is simple and straightforward', 'It\'s a common testing word'],
+            success_criteria: 'Player provides the key: test',
+            required_missions: [] // Starting mission
+        },
+
+        {
+            mission_id: 'debug_2',
+            type: 'primary_mission',
+            primary_objective: 'Confirm system status by typing "SYSTEM ONLINE".',
+            context: 'Need to verify that all subsystems are responding correctly.',
+            difficulty: 'Easy',
+            hints: ['Just type exactly what the objective asks for'],
+            success_criteria: 'Player types: SYSTEM ONLINE',
+            required_missions: ['debug_1']
+        },
+
+        {
+            mission_id: 'debug_3',
+            type: 'primary_mission',
+            primary_objective: 'Report the mission completion status.',
+            context: 'Final step in the debug sequence to confirm everything worked.',
+            difficulty: 'Easy',
+            hints: ['Tell me if the debug test was successful'],
+            success_criteria: 'Player responds with: DEBUG COMPLETE',
+            required_missions: ['debug_1']
+        }
+    ]
 }

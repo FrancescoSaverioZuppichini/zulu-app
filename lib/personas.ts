@@ -1,5 +1,4 @@
-import { Mission, Persona } from "@/types/types";
-import { mamalPodMissions } from "./missions";
+import { Persona } from "@/types/types";
 
 
 export const personas: Record<string, Persona> = {

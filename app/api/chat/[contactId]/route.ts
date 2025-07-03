@@ -47,7 +47,7 @@ export async function POST(
     system: createPersonaSystemPrompt(personas[contactId], initialMissions),
     maxSteps: 4,
     // model: openai("gpt-4o-mini"),
-    model: google("gemini-2.5-flash-preview-04-17"),
+    model: google("gemini-2.5-flash"),
     messages,
     tools: tools(userId, contactId, completedMissions),
     async onFinish({ response }) {
