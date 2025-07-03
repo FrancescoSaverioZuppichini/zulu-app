@@ -17,6 +17,7 @@ export default async function ChatPage({
   console.log("ChatPage", session);
 
   if (!session?.user) {
+    console.log("ChatPage redict");
     redirect("/");
   }
 

@@ -11,13 +11,14 @@ export default async function ContactsPage() {
   console.log("ContactsPage", session);
 
   if (!session?.user) {
+    console.log("ContactsPage redirect");
     redirect("/");
   }
 
   return (
     <div className="flex flex-col h-full">
       <StatusBar />
-      <ContactsList />
+      <ContactsList user={session.user} />
     </div>
   );
 }

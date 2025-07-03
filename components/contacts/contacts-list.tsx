@@ -9,27 +9,18 @@ import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useTransition } from "react";
 import { createChat } from "@/lib/actions";
+import { User } from "next-auth";
 
-export function ContactsList() {
+export function ContactsList({ user }: { user: User }) {
   const { contacts } = useContacts();
 
   const [pending, startTransition] = useTransition();
   const router = useRouter();
 
-  const { data: session } = useSession();
-
-  if (!session?.user?.name) {
-    router.push("/");
-    return;
-  }
-
   const selectContact = (contactId: string) => {
     startTransition(async () => {
-      if (session?.user) {
-        const chatId = await createChat(
-          session.user.name || "unkown",
-          contactId
-        );
+      if (user) {
+        const chatId = await createChat(user.name || "unkown", contactId);
         router.push(`/home/messages/${contactId}`);
       }
     });

@@ -10,6 +10,7 @@ export default async function NewMessagePage() {
   console.log("NewMessagePage", session);
 
   if (!session?.user) {
+    console.log("NewMessagePage redict");
     redirect("/");
   }
   return (
