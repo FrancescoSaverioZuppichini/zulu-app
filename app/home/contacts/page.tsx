@@ -1,10 +1,10 @@
-import { AppGrid } from "@/components/phone/app-grid";
 import { PhoneContainer } from "@/components/phone/phone-container";
 import { StatusBar } from "@/components/phone/status-bar";
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
+import { ContactsList } from "@/components/contacts/contacts-list";
 
-export default async function HomePage() {
+export default async function ContactsPage() {
   const session = await auth();
 
   if (!session) {
@@ -12,11 +12,9 @@ export default async function HomePage() {
   }
 
   return (
-    <main className="grid min-h-screen flex-col ">
-      <div className="flex flex-col h-full">
-        <StatusBar />
-        <AppGrid />
-      </div>
-    </main>
+    <div className="flex flex-col h-full">
+      <StatusBar />
+      <ContactsList />
+    </div>
   );
 }

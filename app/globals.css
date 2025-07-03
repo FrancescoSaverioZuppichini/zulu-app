@@ -57,3 +57,33 @@
     @apply bg-background text-foreground;
   }
 }
+
+@keyframes typing {
+  0% {
+    width: 0ch;
+  }
+  12.5% {
+    width: 1ch;
+  }
+  25% {
+    width: 2ch;
+  }
+  37.5% {
+    width: 3ch;
+  }
+  50% {
+    width: 4ch;
+  }
+  62.5% {
+    width: 5ch;
+  }
+  75% {
+    width: 6ch;
+  }
+  87.5% {
+    width: 7ch;
+  }
+  100% {
+    width: 8ch;
+  }
+}

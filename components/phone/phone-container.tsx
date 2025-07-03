@@ -1,7 +1,7 @@
-import type { ReactNode } from "react"
+import type { ReactNode } from "react";
 
 interface PhoneContainerProps {
-  children: ReactNode
+  children: ReactNode;
 }
 
 export function PhoneContainer({ children }: PhoneContainerProps) {
@@ -12,5 +12,5 @@ export function PhoneContainer({ children }: PhoneContainerProps) {
         {children}
       </div>
     </div>
-  )
+  );
 }

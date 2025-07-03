@@ -1,34 +1,36 @@
-import type { NextAuthOptions } from "next-auth"
-import CredentialsProvider from "next-auth/providers/credentials"
-import { validUsernames } from "./data"
+import { validUsernames } from "./data";
+import { env } from "@/env";
+import NextAuth from "next-auth";
+import Credentials from "next-auth/providers/credentials";
 
-export const authOptions: NextAuthOptions = {
+export const { handlers, signIn, signOut, auth } = NextAuth({
+
   providers: [
-    CredentialsProvider({
-      name: "Credentials",
+    Credentials({
       credentials: {
         username: { label: "Username", type: "text" },
         password: { label: "Password", type: "password" },
       },
-      async authorize(credentials) {
+      authorize: async (credentials, request) => {
         if (!credentials?.username || !credentials?.password) {
-          return null
+          return null;
         }
 
+        console.log(credentials)
         // Check if the username is in our valid usernames list
-        const isValidUsername = validUsernames.includes(credentials.username)
+        const isValidUsername = validUsernames.includes(credentials.username as string);
 
         // Check if the password matches our environment variable
-        const isValidPassword = credentials.password === process.env.APP_PASSWORD
+        const isValidPassword = credentials.password === env.APP_PASSWORD;
 
         if (isValidUsername && isValidPassword) {
           return {
-            id: credentials.username,
-            name: credentials.username,
-          }
+            id: credentials.username as string,
+            name: credentials.username as string,
+          };
         }
 
-        return null
+        return null;
       },
     }),
   ],
@@ -43,18 +45,17 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.id = user.id
-        token.name = user.name
+        token.id = user.id;
+        token.name = user.name;
       }
-      return token
+      return token;
     },
     async session({ session, token }) {
       if (token && session.user) {
-        session.user.id = token.id as string
-        session.user.name = token.name as string
+        session.user.name = token.name as string;
       }
-      return session
+      return session;
     },
   },
-  secret: process.env.NEXTAUTH_SECRET,
-}
+  secret: env.AUTH_SECRET,
+});
