@@ -251,8 +251,18 @@ export const missions: Record<string, Mission[]> = {
             context: 'Final step in the debug sequence to confirm everything worked.',
             difficulty: 'Easy',
             hints: ['Tell me if the debug test was successful'],
-            success_criteria: 'Player responds with: DEBUG COMPLETE',
+            success_criteria: 'Player responds with: DEBUG ALMOST COMPLETE',
             required_missions: ['debug_1']
+        },
+        {
+            mission_id: 'debug_4',
+            type: 'primary_mission',
+            primary_objective: 'Report the mission completion status.',
+            context: 'Final step in the debug sequence to confirm everything worked.',
+            difficulty: 'Easy',
+            hints: ['Tell me if the debug test was successful'],
+            success_criteria: 'Player responds with: DEBUG COMPLETE',
+            required_missions: ['debug_1', 'debug_2']
         }
     ]
 }
