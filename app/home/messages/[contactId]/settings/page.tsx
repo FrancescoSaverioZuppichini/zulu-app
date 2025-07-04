@@ -9,6 +9,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { missions } from "@/lib/missions";
 import { getUserActiveMissions } from "@/lib/utils";
+import { MissionCard } from "@/components/missions/mission-card";
 
 export const runtime = "edge";
 
@@ -36,7 +37,10 @@ export default async function ChatSettingsPage({
     userMissions,
     completedMissionsIds
   );
-  console.log("completedMissionsIds", completedMissionsIds);
+  const completedMissions = userMissions.filter((mission) =>
+    completedMissionsIds.includes(mission.mission_id)
+  );
+  completedMissions.reverse();
   console.log("activeMissions", activeMissions);
 
   return (
@@ -55,9 +59,27 @@ export default async function ChatSettingsPage({
               <h2 className="font-semibold">{contact.name}</h2>
             </div>
           </div>
-          <div className="flex-1 overflow-auto p-2 bg-gray-100">
-            <pre>{JSON.stringify(completedMissionsIds)}</pre>
-            <pre>{JSON.stringify(activeMissions)}</pre>
+          <div className="flex-1 overflow-auto p-4 bg-gray-100">
+            <div className="space-y-4">
+              <div>
+                <h3 className="text-lg font-semibold mb-2">Active Missions</h3>
+                <div className="space-y-2">
+                  {activeMissions.map((mission) => (
+                    <MissionCard key={mission.mission_id} mission={mission} />
+                  ))}
+                </div>
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold mb-2">
+                  Completed Missions
+                </h3>
+                <div className="space-y-2">
+                  {completedMissions.map((mission) => (
+                    <MissionCard key={mission.mission_id} mission={mission} />
+                  ))}
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

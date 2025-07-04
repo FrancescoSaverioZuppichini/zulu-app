@@ -24,10 +24,18 @@ export const fileToBase64 = (file: File): Promise<string> => {
 };
 
 export const getUserActiveMissions = (userMissions: Mission[], completedMissionsIds: string[]): Mission[] => {
-  const activeMissions = userMissions.filter(mission => {
-    if (mission.required_missions.length === 0) return false
-    return mission.required_missions.every(requiredId =>
-      completedMissionsIds.includes(requiredId) && !completedMissionsIds.includes(mission.mission_id));
-  });
+  let activeMissions: Mission[];
+  if (completedMissionsIds.length === 0) {
+    activeMissions = userMissions.filter(mission => mission.required_missions.length === 0)
+  }
+  else {
+
+    activeMissions = userMissions.filter(mission => {
+      if (mission.required_missions.length === 0) return false
+      return mission.required_missions.every(requiredId =>
+        completedMissionsIds.includes(requiredId) && !completedMissionsIds.includes(mission.mission_id)
+      );
+    });
+  }
   return activeMissions
 }
