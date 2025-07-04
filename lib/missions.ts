@@ -47,7 +47,7 @@ export const missions: Record<string, Mission[]> = {
         },
 
         {
-            mission_id: '2',
+            mission_id: '2o',
             type: 'primary_mission',
             primary_objective: 'Risolvi l\'enigma per ottenere la KEY di installazione dei Driver',
             context: 'La KEY è criptata, prego risolvi l\'enigma e forniscimela.',
@@ -58,7 +58,7 @@ export const missions: Record<string, Mission[]> = {
         },
 
         {
-            mission_id: '3',
+            mission_id: '3o',
             type: 'primary_mission',
             primary_objective: 'C\'è una lettera nascosta firmata da Major Zero, recuperatela.',
             context: 'Sarà necessario fargli una foto ed inviarmela.',
@@ -76,7 +76,7 @@ export const missions: Record<string, Mission[]> = {
             difficulty: 'Medium',
             hints: ['Sicuramente questa informazione è contenuta nella lettera, sfogliatela attentamente.', 'questa informazione è contenuta nel fascicolo di Naked Snake, controllate attentamente.'],
             success_criteria: 'Il giocatore invia la risposta: Tselinoyarsk',
-            required_missions: ['3', '5'] // Requires both letter and Naked Snake file
+            required_missions: ['3o', '5o'] // Requires both letter and Naked Snake file
         },
 
         {
@@ -87,7 +87,7 @@ export const missions: Record<string, Mission[]> = {
             difficulty: 'Medium',
             hints: ['Controllate accuratamente la lettera, il mittente sarà lui.'],
             success_criteria: 'Il giocatore fornisce la risposta: David Oh',
-            required_missions: ['3']
+            required_missions: ['3o']
         },
 
         {
@@ -98,11 +98,11 @@ export const missions: Record<string, Mission[]> = {
             difficulty: 'Medium',
             hints: ['Controllate accuratamente la lettera, potrebbe essere indicato in una nota dove è riposto, ovviamente fotografatela alla base.'],
             success_criteria: 'Il giocatore invia una foto dell\'emblema con spada ed ali sul foglio con i riquadri',
-            required_missions: ['3']
+            required_missions: ['3o']
         },
 
         {
-            mission_id: '5',
+            mission_id: '5o',
             type: 'primary_mission',
             primary_objective: 'C\'è un fascicolo che mi interessa in quanto è di una persona ricorrente, Recuperate il fascicolo di Naked Snake.',
             context: 'Questo nome continua a tornare, perchè è così importante?.',
@@ -113,7 +113,7 @@ export const missions: Record<string, Mission[]> = {
         },
 
         {
-            mission_id: '6',
+            mission_id: '6o',
             type: 'primary_mission',
             primary_objective: 'C\'è un oggetto che desidero mi portiate. Portate una Stella di Betlemme.',
             context: 'Non lo capisco ancora ma è un simbolo legato a me.',
@@ -168,7 +168,7 @@ export const missions: Record<string, Mission[]> = {
         },
 
         {
-            mission_id: '2',
+            mission_id: '2o',
             type: 'primary_mission',
             primary_objective: 'Informazioni cruciali sono contenute nei fascicoli del Progetto P, per proseguire fornire la key di accesso allegata al fascicolo del progetto.',
             context: 'Insieme al fascicolo vi è presente una key di accesso oltre che ai file stessi, fornitemela.',
@@ -186,7 +186,7 @@ export const missions: Record<string, Mission[]> = {
             difficulty: 'Medium',
             hints: ['Le informazioni sono contenute nel fascicolo, leggetelo bene'],
             success_criteria: 'Il giocatore risponde che i Kidnapper sono dei prototipi di UCAV per la sorveglianza ed il recupero di personale.',
-            required_missions: ['2']
+            required_missions: ['2o']
         },
 
         {
@@ -197,7 +197,7 @@ export const missions: Record<string, Mission[]> = {
             difficulty: 'Medium',
             hints: ['Le informazioni sono contenute nel fascicolo, leggetelo bene'],
             success_criteria: 'Il giocatore risponde che il centro di ricerca principale si trova al centro di ricerca nel vulcano Irazù.',
-            required_missions: ['2']
+            required_missions: ['2o']
         },
 
         {
@@ -208,11 +208,11 @@ export const missions: Record<string, Mission[]> = {
             difficulty: 'Medium',
             hints: ['Le informazioni sono contenute nel fascicolo, leggetelo bene', 'Controllate nazionalita e alleanze delle persone che vi sono riportate nella lettera'],
             success_criteria: 'Il giocatore risponde che i finanziatori principali sono la CIA, il KGB e i Patriots.',
-            required_missions: ['2', '0b'] //Both required
+            required_missions: ['2o', '0b'] //Both required
         },
 
         {
-            mission_id: '4',
+            mission_id: '4o',
             type: 'primary_mission',
             primary_objective: 'Ora posseggo un contesto maggiore, siete qui per sapere del progetto P?.',
             context: 'Ho capito il vostro scopo, ora mi avete fornito di una maggiore comprensione, vi fornirò se lo volete una spiegazione del ruolo che ricopro.',
