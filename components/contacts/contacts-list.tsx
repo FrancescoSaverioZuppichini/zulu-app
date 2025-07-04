@@ -61,6 +61,7 @@ export function ContactsList({ user }: { user: User }) {
               size="icon"
               onClick={() => selectContact(contact.id)}
               aria-label={`Chat with ${contact.name}`}
+              className="[&_svg]:size-5"
             >
               <MessageSquare className="h-5 w-5 text-blue-500" />
             </Button>

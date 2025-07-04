@@ -15,11 +15,7 @@ import Message from "./message";
 import { text } from "stream/consumers";
 import { Chat } from "@/types/types";
 import { User } from "next-auth";
-import {
-  resetUserChat,
-  resetUserChatMessages,
-  resetUserChatProgress,
-} from "@/lib/actions";
+import { resetUserChatMessages, resetUserChatProgress } from "@/lib/actions";
 
 interface Message {
   id: string;
@@ -188,7 +184,7 @@ export function MessageChat({ chat, contact, userId }: MessageChatProps) {
           <Button
             variant="ghost"
             size="icon"
-            className="rounded-full h-10 w-10 text-blue-500 [&_svg]:size-6"
+            className="rounded-full h-10 w-10 text-blue-500 [&_svg]:size-5"
           >
             <Plus className="h-5 w-5" />
           </Button>
@@ -205,7 +201,7 @@ export function MessageChat({ chat, contact, userId }: MessageChatProps) {
               variant="ghost"
               type="submit"
               size="icon"
-              className="rounded-full h-10 w-10 text-blue-500 [&_svg]:size-6"
+              className="rounded-full h-10 w-10 text-blue-500 [&_svg]:size-5"
               disabled={status === "submitted"}
             >
               <Send className="h-4 w-4" />
@@ -218,7 +214,7 @@ export function MessageChat({ chat, contact, userId }: MessageChatProps) {
               size={"icon"}
               onClick={handleImageButtonClick}
               disabled={status === "submitted"}
-              className="rounded-full h-10 w-10 text-blue-500 [&_svg]:size-6"
+              className="rounded-full h-10 w-10 text-blue-500 [&_svg]:size-5"
             >
               <ImageIcon />
             </Button>
