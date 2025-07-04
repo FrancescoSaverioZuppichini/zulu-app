@@ -15,7 +15,11 @@ import Message from "./message";
 import { text } from "stream/consumers";
 import { Chat } from "@/types/types";
 import { User } from "next-auth";
-import { resetUserChat } from "@/lib/actions";
+import {
+  resetUserChat,
+  resetUserChatMessages,
+  resetUserChatProgress,
+} from "@/lib/actions";
 
 interface Message {
   id: string;
@@ -53,9 +57,17 @@ export function MessageChat({ chat, contact, userId }: MessageChatProps) {
     fileInputRef.current?.click();
   };
 
-  const handleClearOnClick = () => {
+  const handleClearMessagesOnClick = () => {
     startTransaction(async () => {
-      await resetUserChat(userId, contact.id);
+      await resetUserChatMessages(userId, contact.id);
+      router.refresh();
+    });
+  };
+
+  const handleClearProgressOnClick = () => {
+    startTransaction(async () => {
+      await resetUserChatMessages(userId, contact.id);
+      await resetUserChatProgress(userId, contact.id);
       router.refresh();
     });
   };
@@ -171,12 +183,12 @@ export function MessageChat({ chat, contact, userId }: MessageChatProps) {
 
         <form
           onSubmit={handleFormSubmit}
-          className="inline-flex items-end bg-white rounded-full border border-gray-300 px-2 w-full"
+          className="inline-flex items-center items-end bg-white rounded-full border border-gray-300 px-2 w-full"
         >
           <Button
             variant="ghost"
             size="icon"
-            className="rounded-full h-8 w-8 text-blue-500"
+            className="rounded-full h-10 w-10 text-blue-500 [&_svg]:size-6"
           >
             <Plus className="h-5 w-5" />
           </Button>
@@ -186,14 +198,14 @@ export function MessageChat({ chat, contact, userId }: MessageChatProps) {
             onChange={handleInputChange}
             disabled={status === "submitted"}
             placeholder="iMessage"
-            className="border-none shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 h-10 grow"
+            className="border-none shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 h-12 grow"
           />
           {input.trim() && (
             <Button
               variant="ghost"
               type="submit"
               size="icon"
-              className="rounded-full h-8 w-8 text-blue-500"
+              className="rounded-full h-10 w-10 text-blue-500 [&_svg]:size-6"
               disabled={status === "submitted"}
             >
               <Send className="h-4 w-4" />
@@ -202,13 +214,13 @@ export function MessageChat({ chat, contact, userId }: MessageChatProps) {
           {!files && (
             <Button
               variant="ghost"
-              size="icon"
               type="button"
+              size={"icon"}
               onClick={handleImageButtonClick}
               disabled={status === "submitted"}
-              className="rounded-full h-8 w-8 text-blue-500"
+              className="rounded-full h-10 w-10 text-blue-500 [&_svg]:size-6"
             >
-              <ImageIcon className="h-4 w-4" />
+              <ImageIcon />
             </Button>
           )}
           <input
@@ -219,9 +231,13 @@ export function MessageChat({ chat, contact, userId }: MessageChatProps) {
             style={{ display: "none" }}
           />
         </form>
-        <div className="flex justify-center items-center w-full">
-          <Button variant={"destructive"} onClick={handleClearOnClick}>
-            Clear
+        <div className="flex justify-center items-center w-full gap-1 mt-2">
+          <Button variant={"destructive"} onClick={handleClearMessagesOnClick}>
+            Clear Messages
+          </Button>
+
+          <Button variant={"destructive"} onClick={handleClearProgressOnClick}>
+            Clear All
           </Button>
         </div>
       </div>

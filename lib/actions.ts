@@ -21,8 +21,14 @@ export async function createChat(userId: string, contactId: string): Promise<str
     return id;
 }
 
-export async function resetUserChat(userId: string, contactId: string) {
+export async function resetUserChatMessages(userId: string, contactId: string) {
     const key = `chat:${userId}:${contactId}`;
     const chat = await redis.get<Chat>(key);
     await redis.set(key, JSON.stringify({ ...chat, messages: [] }));
+}
+
+
+export async function resetUserChatProgress(userId: string, contactId: string) {
+    const key = `mission:${userId}:${contactId}`;
+    await redis.del(key)
 }
