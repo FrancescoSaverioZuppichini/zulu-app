@@ -196,20 +196,13 @@ export function MessageChat({
           onSubmit={handleFormSubmit}
           className="inline-flex items-center items-end bg-white rounded-full border border-gray-300 px-2 w-full"
         >
-          <Button
-            variant="ghost"
-            size="icon"
-            className="rounded-full h-10 w-10 text-blue-500 [&_svg]:size-5"
-          >
-            <Plus className="h-5 w-5" />
-          </Button>
           <Input
             name="prompt"
             value={input}
             onChange={handleInputChange}
             disabled={status === "submitted"}
             placeholder="iMessage"
-            className="border-none shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 h-12 grow"
+            className="ml-4 border-none shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 h-12 grow"
           />
           {input.trim() && (
             <Button
