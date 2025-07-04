@@ -16,6 +16,11 @@ export default async function HomePage() {
   return (
     <main className="grid min-h-screen flex-col ">
       <div className="flex flex-col h-full">
+        {session?.user?.admin && (
+          <p className="p-2 flex items-center justify-center">
+            YOU ARE AN ADMIN for {session?.user.name}
+          </p>
+        )}
         <StatusBar />
         <AppGrid />
       </div>

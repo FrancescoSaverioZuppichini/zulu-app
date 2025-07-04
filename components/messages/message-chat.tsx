@@ -28,9 +28,15 @@ interface MessageChatProps {
   chat: Chat;
   contact: Contact;
   userId: string;
+  isAdmin?: boolean;
 }
 
-export function MessageChat({ chat, contact, userId }: MessageChatProps) {
+export function MessageChat({
+  chat,
+  contact,
+  userId,
+  isAdmin = false,
+}: MessageChatProps) {
   const { messages, input, handleInputChange, handleSubmit, status, error } =
     useChat({
       initialMessages: chat.messages,
@@ -236,15 +242,23 @@ export function MessageChat({ chat, contact, userId }: MessageChatProps) {
             style={{ display: "none" }}
           />
         </form>
-        <div className="flex justify-center items-center w-full gap-1 mt-2">
-          <Button variant={"destructive"} onClick={handleClearMessagesOnClick}>
-            Clear Messages
-          </Button>
+        {isAdmin && (
+          <div className="flex justify-center items-center w-full gap-1 mt-2">
+            <Button
+              variant={"destructive"}
+              onClick={handleClearMessagesOnClick}
+            >
+              Clear Messages
+            </Button>
 
-          <Button variant={"destructive"} onClick={handleClearProgressOnClick}>
-            Clear All
-          </Button>
-        </div>
+            <Button
+              variant={"destructive"}
+              onClick={handleClearProgressOnClick}
+            >
+              Clear All
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -1,6 +1,7 @@
 import { Mission } from "@/types/types";
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
+import { missions } from "./missions";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -39,3 +40,4 @@ export const getUserActiveMissions = (userMissions: Mission[], completedMissions
   }
   return activeMissions
 }
+

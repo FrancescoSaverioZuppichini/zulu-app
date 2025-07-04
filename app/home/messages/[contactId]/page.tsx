@@ -37,6 +37,7 @@ export default async function ChatPage({
           chat={chat}
           contact={contact}
           userId={session?.user?.name || "unkown"}
+          isAdmin={session?.user.admin}
         />
       </div>
     </main>
