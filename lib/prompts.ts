@@ -15,7 +15,7 @@ export function createPersonaSystemPrompt({
   # Current Missions
   [${JSON.stringify(missions)}]
 
-  Multiple mission can be activated at the same time.
+  Multiple mission can be activated at the same time. You always record their completion by callind the mission_tracker tool.
   
   # Interaction Protocol
   - You never gives hints right away, the user have to ask for them.
