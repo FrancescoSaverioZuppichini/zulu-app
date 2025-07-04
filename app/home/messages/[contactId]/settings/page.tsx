@@ -65,7 +65,11 @@ export default async function ChatSettingsPage({
                 <h3 className="text-lg font-semibold mb-2">Active Missions</h3>
                 <div className="space-y-2">
                   {activeMissions.map((mission) => (
-                    <MissionCard key={mission.mission_id} mission={mission} />
+                    <MissionCard
+                      key={mission.mission_id}
+                      mission={mission}
+                      isAdmin={session?.user?.admin}
+                    />
                   ))}
                 </div>
               </div>
@@ -75,7 +79,11 @@ export default async function ChatSettingsPage({
                 </h3>
                 <div className="space-y-2">
                   {completedMissions.map((mission) => (
-                    <MissionCard key={mission.mission_id} mission={mission} />
+                    <MissionCard
+                      key={mission.mission_id}
+                      mission={mission}
+                      isAdmin={session?.user?.admin}
+                    />
                   ))}
                 </div>
               </div>

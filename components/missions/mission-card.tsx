@@ -7,7 +7,13 @@ import {
 } from "@/components/ui/card";
 import { Mission } from "@/types/types";
 
-export function MissionCard({ mission }: { mission: Mission }) {
+export function MissionCard({
+  mission,
+  isAdmin = false,
+}: {
+  mission: Mission;
+  isAdmin?: boolean;
+}) {
   return (
     <Card>
       <CardHeader>
@@ -22,7 +28,7 @@ export function MissionCard({ mission }: { mission: Mission }) {
       <CardContent>
         <p>Difficulty: {mission.difficulty}</p>
         <p>Required Ids: {`[${mission.required_missions.join(" ")}]`}</p>
-        <p>Success Criteria: {mission.success_criteria}</p>
+        {isAdmin && <p>Success Criteria: {mission.success_criteria}</p>}
       </CardContent>
     </Card>
   );
