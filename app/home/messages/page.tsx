@@ -8,7 +8,6 @@ import { getUserChats } from "@/lib/crud";
 export const runtime = "edge";
 export default async function MessagesPage() {
   const session = await auth();
-  console.log(session);
 
   if (!session?.user) {
     redirect("/");

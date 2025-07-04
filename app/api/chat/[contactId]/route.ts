@@ -10,6 +10,7 @@ import { openai } from '@ai-sdk/openai';
 import { Mission } from "@/types/types";
 import { missions } from "@/lib/missions";
 import { auth } from "@/lib/auth";
+import { getUserActiveMissions } from "@/lib/utils";
 
 export const runtime = 'edge'
 
@@ -32,12 +33,14 @@ export async function POST(
     activeMissions = userMissions.filter(mission => mission.required_missions.length === 0)
   }
   else {
-    activeMissions = userMissions.filter(mission => {
-      if (mission.required_missions.length === 0) return false
-      return mission.required_missions.every(requiredId =>
-        completedMissionsIds.includes(requiredId) && !completedMissionsIds.includes(mission.mission_id)
-      );
-    });
+
+    activeMissions = getUserActiveMissions(userMissions, completedMissionsIds)
+    // activeMissions = userMissions.filter(mission => {
+    //   if (mission.required_missions.length === 0) return false
+    //   return mission.required_missions.every(requiredId =>
+    //     completedMissionsIds.includes(requiredId) && !completedMissionsIds.includes(mission.mission_id)
+    //   );
+    // });
   }
 
   console.log("[chat] activeMissions", activeMissions)

@@ -3,6 +3,7 @@ import z from "zod";
 import { saveUserMission } from "./crud";
 import { missions } from "./missions";
 import { Mission } from "@/types/types";
+import { getUserActiveMissions } from "./utils";
 
 export const tools = (userId: string, contactId: string, completedMissionsIds: string[]) => ({
   mission_tracker: tool({
@@ -18,11 +19,8 @@ export const tools = (userId: string, contactId: string, completedMissionsIds: s
       if (!missionExists) return "This mission id doesn't exist, please continue with the currently active missions"
       if (!completedMissionsIds.includes(mission_id)) await saveUserMission(userId, contactId, mission_id)
       completedMissionsIds.push(mission_id)
-      const nextMissions = userMissions.filter(mission => {
-        if (mission.required_missions.length === 0) return false
-        return mission.required_missions.every(requiredId =>
-          completedMissionsIds.includes(requiredId) && !completedMissionsIds.includes(mission.mission_id));
-      });
+
+      const nextMissions = getUserActiveMissions(userMissions, completedMissionsIds)
       if (completedMissionsIds.length === userMissions.length) return "All missions done, congratulate to the user and tell him all the missions are completed."
       console.log("[TOOL]", nextMissions)
       return nextMissions

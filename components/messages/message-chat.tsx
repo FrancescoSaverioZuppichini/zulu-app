@@ -6,7 +6,7 @@ import { useState, useRef, useEffect, useTransition } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ChevronLeft, ImageIcon, Plus, Send } from "lucide-react";
+import { ChevronLeft, ChevronRight, ImageIcon, Plus, Send } from "lucide-react";
 import { useRouter } from "next/navigation";
 import type { Contact } from "@/lib/types";
 import { useChat } from "@ai-sdk/react";
@@ -119,6 +119,15 @@ export function MessageChat({ chat, contact, userId }: MessageChatProps) {
         <div className="flex flex-col items-center mx-auto">
           <h2 className="font-semibold">{contact.name}</h2>
         </div>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => router.push(`/home/messages/${contact.id}/settings`)}
+          className="text-blue-500"
+        >
+          <span>Settings</span>
+          <ChevronRight className="h-4 w-4 mr-1" />
+        </Button>
       </div>
 
       {/* Messages */}

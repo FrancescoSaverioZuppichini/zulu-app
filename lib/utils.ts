@@ -1,3 +1,4 @@
+import { Mission } from "@/types/types";
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 
@@ -21,3 +22,12 @@ export const fileToBase64 = (file: File): Promise<string> => {
     reader.onerror = reject;
   });
 };
+
+export const getUserActiveMissions = (userMissions: Mission[], completedMissionsIds: string[]): Mission[] => {
+  const activeMissions = userMissions.filter(mission => {
+    if (mission.required_missions.length === 0) return false
+    return mission.required_missions.every(requiredId =>
+      completedMissionsIds.includes(requiredId) && !completedMissionsIds.includes(mission.mission_id));
+  });
+  return activeMissions
+}
