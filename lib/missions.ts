@@ -89,7 +89,6 @@ export const missions: Record<string, Mission[]> = {
             success_criteria: 'Il giocatore fornisce la risposta: David Oh',
             required_missions: ['3o']
         },
-
         {
             mission_id: '4c',
             type: 'primary_mission',
