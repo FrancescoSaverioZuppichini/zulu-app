@@ -60,7 +60,7 @@ export function MessagesList({ chats }: { chats: ChatPreview[] }) {
             variant="ghost"
             size="sm"
             onClick={startNewMessage}
-            className="text-blue-500 font-normal text-base"
+            className="text-blue-500 font-normal text-base [&_svg]:size-5"
           >
             <Edit className="h-5 w-5" />
           </Button>

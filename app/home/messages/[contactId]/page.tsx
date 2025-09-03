@@ -14,7 +14,6 @@ export default async function ChatPage({
   const { contactId } = await params;
 
   const session = await auth();
-  console.log("ChatPage", session);
 
   if (!session?.user) {
     console.log("ChatPage redict");
@@ -38,6 +37,7 @@ export default async function ChatPage({
           chat={chat}
           contact={contact}
           userId={session?.user?.name || "unkown"}
+          isAdmin={session?.user.admin}
         />
       </div>
     </main>

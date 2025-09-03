@@ -1,20 +1,11 @@
 import { AppGrid } from "@/components/phone/app-grid";
-import { PhoneContainer } from "@/components/phone/phone-container";
 import { StatusBar } from "@/components/phone/status-bar";
-import { redirect } from "next/navigation";
-import { auth } from "@/lib/auth";
 
 export const runtime = "edge";
 
-export default async function HomePage() {
-  const session = await auth();
-
-  if (!session) {
-    redirect("/");
-  }
-
+export default function HomePage() {
   return (
-    <main className="grid min-h-screen flex-col ">
+    <main className="grid h-full flex-col">
       <div className="flex flex-col h-full">
         <StatusBar />
         <AppGrid />
