@@ -6,21 +6,16 @@ import { Input } from "@/components/ui/input";
 import { createChat } from "@/lib/actions";
 import { useContacts } from "@/providers/contacts-provider";
 import { ChevronLeft, Search } from "lucide-react";
+import { Session } from "next-auth";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 
-export function ContactSelector() {
+export function ContactSelector({ user }: { user: Session["user"] }) {
   const { contacts } = useContacts();
   const [pending, startTransition] = useTransition();
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
-  const { data: session } = useSession();
-
-  if (!session?.user?.name) {
-    router.push("/");
-    return;
-  }
 
   const filteredContacts = contacts.filter(
     (contact) =>
@@ -30,13 +25,9 @@ export function ContactSelector() {
 
   const selectContact = (contactId: string) => {
     startTransition(async () => {
-      if (session?.user) {
-        const chatId = await createChat(
-          session.user.name || "unkown",
-          contactId
-        );
-        router.push(`/home/messages/${contactId}`);
-      }
+      const chatId = await createChat(user.name, contactId);
+      console.log(chatId);
+      router.push(`/home/messages/${contactId}`);
     });
   };
 

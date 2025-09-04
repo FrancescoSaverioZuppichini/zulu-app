@@ -1,6 +1,10 @@
 "use server"
 import { redis } from "./db";
 import { Chat } from "@/types/types";
+import { s3 } from "./s3";
+import { PutObjectCommand } from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import { env } from "@/env";
 
 export async function createChat(userId: string, contactId: string): Promise<string> {
     const id = crypto.randomUUID();
@@ -34,7 +38,20 @@ export async function resetUserChatProgress(userId: string, contactId: string) {
 }
 
 
-export async function storeImage(image: Blob): Promise<{ url: str }> {
+export async function getSignedURL(filename: string, contentType: string) {
+    
 
+    const key = `chats/${crypto.randomUUID()}-${filename}`
 
+    const url = await getSignedUrl(
+        s3,
+        new PutObjectCommand({ 
+            Bucket: env.R2_BUCKET_NAME, 
+            Key: key,
+            ContentType: contentType, 
+        }),
+        { expiresIn: 600 },
+    )
+
+    return {url, key};
 }

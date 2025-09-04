@@ -6,7 +6,14 @@ import { useState, useRef, useEffect, useTransition } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ChevronLeft, ChevronRight, ImageIcon, Plus, Send } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  ImageIcon,
+  Plus,
+  Send,
+  Loader,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 import type { Contact } from "@/lib/types";
 import { useChat } from "@ai-sdk/react";
@@ -15,14 +22,11 @@ import Message from "./message";
 import { text } from "stream/consumers";
 import { Chat } from "@/types/types";
 import { User } from "next-auth";
-import { resetUserChatMessages, resetUserChatProgress } from "@/lib/actions";
-
-interface Message {
-  id: string;
-  text: string;
-  sent: boolean;
-  timestamp: Date;
-}
+import {
+  getSignedURL,
+  resetUserChatMessages,
+  resetUserChatProgress,
+} from "@/lib/actions";
 
 interface MessageChatProps {
   chat: Chat;
@@ -43,9 +47,11 @@ export function MessageChat({
       api: `/api/chat/${contact.id}`,
     });
   const [showTimestamp, setShowTimestamp] = useState(true);
-  const [files, setFiles] = useState<FileList | undefined>(undefined);
   const [pending, startTransaction] = useTransition();
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [image, setImage] = useState<File | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
+
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
@@ -76,9 +82,8 @@ export function MessageChat({
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
       const file = event.target.files[0];
-      setFiles(event.target.files);
+      setImage(file);
 
-      // Create preview URL
       const reader = new FileReader();
       reader.onload = (e) => {
         setImagePreview(e.target?.result as string);
@@ -88,20 +93,35 @@ export function MessageChat({
   };
 
   const clearSelectedImage = () => {
-    setFiles(undefined);
+    setImage(null);
     setImagePreview(null);
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
   };
 
-  const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    let imageUrl: string | undefined = undefined;
+    if (image) {
+      setIsUploading(true);
+      const { url, key } = await getSignedURL(image.name, image.type);
+      await fetch(url, {
+        method: "PUT",
+        body: image,
+        headers: {
+          "Content-Type": image.type,
+        },
+      });
+      imageUrl = `https://30c88c8e1893979aeef493b678e011ea.r2.cloudflarestorage.com/zulu-app-bucket/${key}`;
+      setIsUploading(false);
+    }
+
     handleSubmit(event, {
-      experimental_attachments: files,
-      allowEmptySubmit: true,
+      data: { imageUrl: JSON.stringify({ imageUrl }) },
     });
 
-    setFiles(undefined);
+    setImage(null);
     setImagePreview(null);
 
     if (fileInputRef.current) {
@@ -179,14 +199,20 @@ export function MessageChat({
                   alt="Preview"
                   className="w-16 h-16 object-cover rounded-lg"
                 />
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={clearSelectedImage}
-                  className="absolute -top-1 -right-1 h-5 w-5 p-0 bg-red-500 text-white rounded-full hover:bg-red-600"
-                >
-                  ×
-                </Button>
+                {isUploading ? (
+                  <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-lg">
+                    <Loader className="animate-spin text-white" />
+                  </div>
+                ) : (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={clearSelectedImage}
+                    className="absolute -top-1 -right-1 h-5 w-5 p-0 bg-red-500 text-white rounded-full hover:bg-red-600"
+                  >
+                    ×
+                  </Button>
+                )}
               </div>
             </div>
           </div>
@@ -200,7 +226,7 @@ export function MessageChat({
             name="prompt"
             value={input}
             onChange={handleInputChange}
-            disabled={status === "submitted"}
+            disabled={status === "submitted" || isUploading}
             placeholder="iMessage"
             className="ml-4 border-none shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 h-12 grow"
           />
@@ -210,18 +236,18 @@ export function MessageChat({
               type="submit"
               size="icon"
               className="rounded-full h-10 w-10 text-blue-500 [&_svg]:size-5"
-              disabled={status === "submitted"}
+              disabled={status === "submitted" || isUploading}
             >
               <Send className="h-4 w-4" />
             </Button>
           )}
-          {!files && (
+          {!image && (
             <Button
               variant="ghost"
               type="button"
               size={"icon"}
               onClick={handleImageButtonClick}
-              disabled={status === "submitted"}
+              disabled={status === "submitted" || isUploading}
               className="rounded-full h-10 w-10 text-blue-500 [&_svg]:size-5"
             >
               <ImageIcon />

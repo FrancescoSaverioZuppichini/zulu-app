@@ -8,14 +8,14 @@ export default async function NewMessagePage() {
 
   console.log("NewMessagePage", session);
 
-  if (!session?.user) {
+  if (!session) {
     console.log("NewMessagePage redict");
     redirect("/");
   }
   return (
     <div className="grid flex-col h-full">
       <StatusBar />
-      <ContactSelector />
+      <ContactSelector user={session.user} />
     </div>
   );
 }
