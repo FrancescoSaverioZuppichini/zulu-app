@@ -3,7 +3,6 @@ import { StatusBar } from "@/components/phone/status-bar";
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 
-export const runtime = "edge";
 export default async function NewMessagePage() {
   const session = await auth();
 

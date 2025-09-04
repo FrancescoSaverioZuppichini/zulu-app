@@ -1,14 +1,15 @@
 {
-  "name": "my-v0-project",
-  "version": "0.1.0",
+  "name": "zulu-app",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "pages:build": "bunx @cloudflare/next-on-pages",
-    "deploy": "bun pages:build && wrangler pages deploy .vercel/output/static"
+    "lint": "next lint ",
+    "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
+    "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
+    "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts"
   },
   "dependencies": {
     "@ai-sdk/google": "^1.2.18",
@@ -16,8 +17,8 @@
     "@ai-sdk/react": "^1.2.12",
     "@auth/core": "latest",
     "@auth/upstash-redis-adapter": "^2.10.0",
-    "@cloudflare/next-on-pages": "^1.13.12",
     "@hookform/resolvers": "^3.9.1",
+    "@opennextjs/cloudflare": "^1.7.1",
     "@radix-ui/react-accordion": "1.2.2",
     "@radix-ui/react-alert-dialog": "1.1.4",
     "@radix-ui/react-aspect-ratio": "1.1.1",

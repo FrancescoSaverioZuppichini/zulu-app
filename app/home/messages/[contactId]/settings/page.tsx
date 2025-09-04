@@ -11,8 +11,6 @@ import { missions } from "@/lib/missions";
 import { getUserActiveMissions } from "@/lib/utils";
 import { MissionCard } from "@/components/missions/mission-card";
 
-export const runtime = "edge";
-
 export default async function ChatSettingsPage({
   params,
 }: {
