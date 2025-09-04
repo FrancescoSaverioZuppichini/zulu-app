@@ -22,8 +22,11 @@ import Message from "./message";
 import { text } from "stream/consumers";
 import { Chat } from "@/types/types";
 import { User } from "next-auth";
+import { toast } from "sonner";
+
 import {
-  getSignedURL,
+  uploadImage,
+  deleteImage,
   resetUserChatMessages,
   resetUserChatProgress,
 } from "@/lib/actions";
@@ -35,21 +38,35 @@ interface MessageChatProps {
   isAdmin?: boolean;
 }
 
+interface UploadedImage {
+  key: string;
+  url: string;
+}
+
 export function MessageChat({
   chat,
   contact,
   userId,
   isAdmin = false,
 }: MessageChatProps) {
-  const { messages, input, handleInputChange, handleSubmit, status, error } =
-    useChat({
-      initialMessages: chat.messages,
-      api: `/api/chat/${contact.id}`,
-    });
+  const {
+    messages,
+    input,
+    handleInputChange,
+    handleSubmit,
+    status,
+    error,
+    append,
+  } = useChat({
+    initialMessages: chat.messages,
+    api: `/api/chat/${contact.id}`,
+  });
   const [showTimestamp, setShowTimestamp] = useState(true);
   const [pending, startTransaction] = useTransition();
   const [imagePreview, setImagePreview] = useState<string | null>(null);
-  const [image, setImage] = useState<File | null>(null);
+  const [uploadedImage, setUploadedImage] = useState<UploadedImage | null>(
+    null
+  );
   const [isUploading, setIsUploading] = useState(false);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -79,51 +96,64 @@ export function MessageChat({
       router.refresh();
     });
   };
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files[0]) {
-      const file = event.target.files[0];
-      setImage(file);
 
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setImagePreview(e.target?.result as string);
-      };
-      reader.readAsDataURL(file);
+  const handleFileChange = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // Create a preview
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      setImagePreview(e.target?.result as string);
+    };
+    reader.readAsDataURL(file);
+
+    // Upload the image
+    setIsUploading(true);
+    const formData = new FormData();
+    formData.append("image", file);
+
+    try {
+      const result = await uploadImage(formData);
+      setUploadedImage(result);
+      // Once uploaded, use the signed URL for the preview as well
+      setImagePreview(result.url);
+    } catch (error) {
+      console.error("Failed to upload image:", error);
+      toast.error("Upload Failed", {
+        description: "The image could not be uploaded. It might be too large.",
+      });
+      clearSelectedImage(); // Clear preview if upload fails
     }
+
+    setIsUploading(false);
   };
 
-  const clearSelectedImage = () => {
-    setImage(null);
+  const clearSelectedImage = async () => {
+    if (uploadedImage) {
+      // Delete from S3
+      await deleteImage(uploadedImage.key);
+    }
+    setUploadedImage(null);
     setImagePreview(null);
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
   };
 
-  const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    let imageUrl: string | undefined = undefined;
-    if (image) {
-      setIsUploading(true);
-      const { url, key } = await getSignedURL(image.name, image.type);
-      await fetch(url, {
-        method: "PUT",
-        body: image,
-        headers: {
-          "Content-Type": image.type,
-        },
-      });
-      imageUrl = `https://30c88c8e1893979aeef493b678e011ea.r2.cloudflarestorage.com/zulu-app-bucket/${key}`;
-      setIsUploading(false);
-    }
+  const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    const imageUrl = uploadedImage?.url;
+    console.log(imageUrl);
 
     handleSubmit(event, {
-      data: { imageUrl: JSON.stringify({ imageUrl }) },
+      data: imageUrl ? { imageUrl } : undefined,
     });
 
-    setImage(null);
+    // Clear the image states after submitting
+    setUploadedImage(null);
     setImagePreview(null);
-
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
@@ -241,7 +271,7 @@ export function MessageChat({
               <Send className="h-4 w-4" />
             </Button>
           )}
-          {!image && (
+          {!uploadedImage && (
             <Button
               variant="ghost"
               type="button"

@@ -1,5 +1,6 @@
 import { auth, signOut } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
+import { Toaster } from "@/components/ui/sonner";
 
 export default async function HomeLayout({
   children,
@@ -26,6 +27,7 @@ export default async function HomeLayout({
         </div>
       )}
       <main className="flex-1">{children}</main>
+      <Toaster />
     </div>
   );
 }

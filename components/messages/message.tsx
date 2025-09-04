@@ -54,7 +54,7 @@ export default function Message({ message }: { message: UIMessage }) {
           )}
 
           {/* Text content */}
-          {message.content && (
+          {message && (
             <MemoizedMarkdown content={message.content} id={message.id} />
           )}
 
