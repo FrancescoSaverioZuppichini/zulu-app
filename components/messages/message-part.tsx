@@ -20,9 +20,10 @@ export function MessagePart({
       if (part.mediaType === "image/png") {
         return <img src={part.url} className="w-[300px]" />;
       }
+      return;
     }
     case "tool-mission_tracker": {
-      const missionId = part.input.mission_id;
+      const missionId = part.input?.mission_id;
       const allMissions = Object.values(missions).flat();
       const mission = allMissions.find((m) => m.mission_id === missionId);
 
@@ -35,6 +36,10 @@ export function MessagePart({
           ✅ mission {missionId} completed!
         </p>
       );
+    }
+    case "tool-introduce_next_missions": {
+      const text = part.input?.text;
+      return <p>{text}</p>;
     }
     default: {
       return null;

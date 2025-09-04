@@ -37,11 +37,11 @@ export async function POST(
   // google("gemini-2.5-flash-preview-04-17"),
   const result = streamText({
     system: createPersonaSystemPrompt(personas[contactId], activeMissions),
-    stopWhen: hasToolCall('mission_tracker'),
+    stopWhen: hasToolCall('introduce_next_missions'),
     // model: openai("gpt-4o-mini"),
     model: google("gemini-2.5-flash"),
     messages: convertToModelMessages(messages),
-    tools: { mission_tracker: tools.mission_tracker(userId, contactId, completedMissionsIds) },
+    tools: { mission_tracker: tools.mission_tracker(userId, contactId, completedMissionsIds), introduce_next_missions: tools.introduce_next_missions },
     onError: (err) => console.error(err),
   });
 

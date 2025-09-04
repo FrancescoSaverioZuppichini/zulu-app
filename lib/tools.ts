@@ -26,4 +26,12 @@ const mission_tracker = (userId: string, contactId: string, completedMissionsIds
   },
 })
 
-export const tools = { mission_tracker }
+const introduce_next_missions = tool({
+  description: "After you used the `mission_tracker` tool you call this tool to introduce the next missions to the user",
+  inputSchema: z.object({ text: z.string().describe("An intro to the next missions the user has to do.") }),
+  execute: async ({ text }) => {
+    return "user notified."
+  }
+})
+
+export const tools = { mission_tracker, introduce_next_missions }
