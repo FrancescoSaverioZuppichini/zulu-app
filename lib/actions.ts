@@ -32,3 +32,9 @@ export async function resetUserChatProgress(userId: string, contactId: string) {
     const key = `mission:${userId}:${contactId}`;
     await redis.del(key)
 }
+
+
+export async function storeImage(image: Blob): Promise<{ url: str }> {
+
+
+}

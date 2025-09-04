@@ -22,7 +22,13 @@
     "UPSTASH_REDIS_REST_TOKEN": "AVxzAAIjcDE0ZjQ0ZGYwNWI3ODU0ZmY0YTI0ODg2MjA1NDFhNDI0M3AxMA",
     "GOOGLE_GENERATIVE_AI_API_KEY": "AIzaSyCiUE3dcpsV5wIFG8Ks-lm-UjKMFu8tq60",
     "AUTH_TRUST_HOST": "true"
-  }
+  },
+  "r2_buckets": [
+    {
+      "bucket_name": "zulu-app-bucket",
+      "binding": "zulu_app_bucket"
+    }
+  ]
   /**
    * Smart Placement
    * Docs: https://developers.cloudflare.com/workers/configuration/smart-placement/#smart-placement
