@@ -15,7 +15,7 @@ import {
   Loader,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import type { Contact } from "@/lib/types";
+import type { Contact, MyUIMessage } from "@/lib/types";
 import { useChat } from "@ai-sdk/react";
 import { cn } from "@/lib/utils";
 import Message from "./message";
@@ -30,6 +30,7 @@ import {
   resetUserChatMessages,
   resetUserChatProgress,
 } from "@/lib/actions";
+import { DefaultChatTransport } from "ai";
 
 interface MessageChatProps {
   chat: Chat;
@@ -49,19 +50,15 @@ export function MessageChat({
   userId,
   isAdmin = false,
 }: MessageChatProps) {
-  const {
-    messages,
-    input,
-    handleInputChange,
-    handleSubmit,
-    status,
-    error,
-    append,
-  } = useChat({
-    initialMessages: chat.messages,
-    api: `/api/chat/${contact.id}`,
+  const { messages, status, sendMessage } = useChat<MyUIMessage>({
+    messages: chat.messages,
+    transport: new DefaultChatTransport({
+      api: `/api/chat/${contact.id}`,
+    }),
+    experimental_throttle: 50,
   });
   const [showTimestamp, setShowTimestamp] = useState(true);
+  const [input, setInput] = useState("");
   const [pending, startTransaction] = useTransition();
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [uploadedImage, setUploadedImage] = useState<UploadedImage | null>(
@@ -95,6 +92,11 @@ export function MessageChat({
       await resetUserChatProgress(userId, contact.id);
       router.refresh();
     });
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.value === "") return;
+    setInput(e.target.value);
   };
 
   const handleFileChange = async (
@@ -143,15 +145,28 @@ export function MessageChat({
     }
   };
 
-  const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     const imageUrl = uploadedImage?.url;
-    console.log(imageUrl);
 
-    handleSubmit(event, {
-      data: imageUrl ? { imageUrl } : undefined,
+    if (!input.trim()) return;
+    sendMessage({
+      role: "user",
+      metadata: { createdAt: new Date() },
+      parts: [
+        ...(imageUrl !== undefined
+          ? [
+              {
+                type: "file" as const,
+                mediaType: "image/png",
+                url: imageUrl,
+              },
+            ]
+          : []),
+        { type: "text", text: input },
+      ],
     });
-
-    // Clear the image states after submitting
+    setInput("");
     setUploadedImage(null);
     setImagePreview(null);
     if (fileInputRef.current) {
@@ -204,7 +219,7 @@ export function MessageChat({
           </div>
         ) : (
           messages.map((message) => (
-            <Message message={message} key={message.id} />
+            <Message message={message as MyUIMessage} key={message.id} />
           ))
         )}
         {status === "submitted" && (
@@ -250,13 +265,13 @@ export function MessageChat({
 
         <form
           onSubmit={handleFormSubmit}
-          className="inline-flex items-center items-end bg-white rounded-full border border-gray-300 px-2 w-full"
+          className="inline-flex  items-end bg-white rounded-full border border-gray-300 px-2 w-full"
         >
           <Input
             name="prompt"
             value={input}
             onChange={handleInputChange}
-            disabled={status === "submitted" || isUploading}
+            disabled={status !== "ready" || isUploading}
             placeholder="iMessage"
             className="ml-4 border-none shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 h-12 grow"
           />
@@ -266,7 +281,7 @@ export function MessageChat({
               type="submit"
               size="icon"
               className="rounded-full h-10 w-10 text-blue-500 [&_svg]:size-5"
-              disabled={status === "submitted" || isUploading}
+              disabled={status !== "ready" || isUploading}
             >
               <Send className="h-4 w-4" />
             </Button>
@@ -277,7 +292,7 @@ export function MessageChat({
               type="button"
               size={"icon"}
               onClick={handleImageButtonClick}
-              disabled={status === "submitted" || isUploading}
+              disabled={status !== "ready" || isUploading}
               className="rounded-full h-10 w-10 text-blue-500 [&_svg]:size-5"
             >
               <ImageIcon />

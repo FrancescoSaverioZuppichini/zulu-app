@@ -11,6 +11,7 @@ import { Mission } from "@/types/types";
 import { missions } from "@/lib/missions";
 import { auth } from "@/lib/auth";
 import { getUserActiveMissions } from "@/lib/utils";
+import { MyUIMessage } from "@/lib/types";
 
 
 
@@ -20,7 +21,7 @@ export async function POST(
   req: Request,
   { params }: { params: Promise<{ contactId: string }> }
 ) {
-  const { messages }: { messages: UIMessage[] } = await req.json();
+  const { messages }: { messages: MyUIMessage[] } = await req.json();
 
   const session = await auth()
   if (!session?.user) return NextResponse.json({ error: "Unauthorize" }, { status: 403 })
@@ -35,26 +36,23 @@ export async function POST(
   console.log(messages)
   // google("gemini-2.5-flash-preview-04-17"),
   const result = streamText({
-    // system: createPersonaSystemPrompt(personas[contactId], activeMissions),
-
-    // stopWhen: hasToolCall('finalAnswer'),
-
+    system: createPersonaSystemPrompt(personas[contactId], activeMissions),
+    stopWhen: hasToolCall('mission_tracker'),
     // model: openai("gpt-4o-mini"),
     model: google("gemini-2.5-flash"),
     messages: convertToModelMessages(messages),
-    // tools: tools(userId, contactId, completedMissionsIds),
-    // onError: (err) => console.error(err),
-    // async onFinish({ response }) {
-    //   await saveUserChat(
-    //     session?.user?.name || "unknown",
-    //     contactId,
-    //     appendResponseMessages({
-    //       messages,
-    //       responseMessages: response.messages,
-    //     }),
-    //   );
-    // },
+    tools: { mission_tracker: tools.mission_tracker(userId, contactId, completedMissionsIds) },
+    onError: (err) => console.error(err),
   });
 
-  return result.toUIMessageStreamResponse();
+
+  return result.toUIMessageStreamResponse<MyUIMessage>({
+    originalMessages: messages, onFinish: async ({ messages }) => {
+      await saveUserChat(
+        session?.user?.name || "unknown",
+        contactId,
+        messages
+      );
+    }
+  });
 }
