@@ -1,7 +1,7 @@
 import { MyUITools } from "@/lib/types";
 import { MemoizedMarkdown } from "./memoized-markdown";
 import { MissionCard } from "../missions/mission-card";
-import { UIMessagePart } from "ai";
+import { UIMessagePart, UIDataTypes } from "ai";
 import { missions } from "@/lib/missions";
 import { Mission } from "@/types/types";
 
@@ -9,7 +9,7 @@ export function MessagePart({
   part,
   id,
 }: {
-  part: UIMessagePart<never, MyUITools>;
+  part: UIMessagePart<UIDataTypes, MyUITools>;
   id: string;
 }) {
   switch (part.type) {

@@ -1,13 +1,19 @@
 import type { Contact } from "./types"
 
 // List of valid usernames that can log in
-export const validUsernames = ["gnps", "fsln", "test", "admin"]
+export const validUsernames = ["xofb", "xofa", "test", "admin"]
 
 // Hardcoded contacts data
 export const contacts: Contact[] = [
   {
-    id: "1",
-    name: "Mammal Pod",
+    id: "xofb",
+    name: "Henrique Lawman",
+    phone: "+1 (555) 123-4567",
+    avatar: "/mammalpod.webp",
+  },
+  {
+    id: "xofa",
+    name: "XO",
     phone: "+1 (555) 123-4567",
     avatar: "/mammalpod.webp",
   },

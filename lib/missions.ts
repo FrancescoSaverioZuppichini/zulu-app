@@ -1,7 +1,7 @@
 import { Mission } from "@/types/types";
 
 export const missions: Record<string, Mission[]> = {
-    "XOF Team A": [
+    "xofa": [
         {
             mission_id: "1a",
             type: "primary_mission",
@@ -80,7 +80,7 @@ export const missions: Record<string, Mission[]> = {
         }
     ],
 
-    "XOF Team B": [
+    "xofb": [
         {
             mission_id: "1b",
             type: "primary_mission",
