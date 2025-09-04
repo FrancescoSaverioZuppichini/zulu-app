@@ -12,7 +12,7 @@ import { missions } from "@/lib/missions";
 import { auth } from "@/lib/auth";
 import { getUserActiveMissions } from "@/lib/utils";
 
-export const runtime = 'edge'
+
 
 export const maxDuration = 30;
 

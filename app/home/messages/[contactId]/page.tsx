@@ -5,7 +5,6 @@ import { MessageChat } from "@/components/messages/message-chat";
 import { getUserChat } from "@/lib/crud";
 import { auth } from "@/lib/auth";
 
-export const runtime = "edge";
 export default async function ChatPage({
   params,
 }: {
