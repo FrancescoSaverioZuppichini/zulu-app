@@ -38,7 +38,7 @@ export function MessagePart({
       );
     }
     case "tool-introduce_next_missions": {
-      const text = part.input?.text;
+      const text = part.input?.text ?? "...";
       return <p>{text}</p>;
     }
     default: {

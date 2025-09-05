@@ -16,6 +16,7 @@ export type ChatPreview = {
   id: string
   contactId: string
   createdAt: Date
+  lastMessage: string
 }
 
 export type Chat = ChatPreview & {

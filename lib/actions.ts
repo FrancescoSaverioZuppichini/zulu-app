@@ -2,9 +2,33 @@
 import { redis } from "./db";
 import { Chat } from "@/types/types";
 import { r2 } from "./r2";
+import { auth } from "@/lib/auth";
+import { revalidatePath } from "next/cache";
 
 import { env } from "@/env";
 import { personas } from "./personas";
+
+export async function deleteChat(userId: string, contactId: string) {
+  const chatKey = `chat:${userId}:${contactId}`;
+  await redis.del(chatKey);
+
+  const userChats = await redis.lrange<Chat>(`user:${userId}:chats`, 0, -1);
+  if (!userChats) return;
+
+  const filteredChats = userChats
+    .filter((chat) => chat.contactId !== contactId);
+
+  await redis.del(`user:${userId}:chats`);
+  if (filteredChats.length > 0) {
+    await redis.lpush(
+      `user:${userId}:chats`,
+      ...filteredChats.map((chat) => JSON.stringify(chat)),
+    );
+  }
+
+  revalidatePath("/home/messages");
+  return {}
+}
 
 export async function createChat(
   userId: string,

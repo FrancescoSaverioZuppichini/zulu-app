@@ -3,17 +3,21 @@
 import { useContacts } from "@/providers/contacts-provider";
 import { useRouter } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { ChevronLeft, Edit, Search } from "lucide-react";
+import { ChevronLeft, Edit, Search, Trash2, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import Link from "next/link";
 import { ChatPreview } from "@/types/types";
+import { useSession } from "next-auth/react";
+import { deleteChat } from "@/lib/actions";
 
 export function MessagesList({ chats }: { chats: ChatPreview[] }) {
   const { contacts } = useContacts();
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
+  const { data: session } = useSession();
+  const [isPending, startTransition] = useTransition();
 
   const startNewMessage = () => {
     router.push("/home/messages/new");
@@ -43,6 +47,12 @@ export function MessagesList({ chats }: { chats: ChatPreview[] }) {
         return date.toLocaleDateString([], { month: "short", day: "numeric" });
       }
     }
+  };
+
+  const handleDelete = (contactId: string) => {
+    startTransition(async () => {
+      await deleteChat(session!.user.name, contactId);
+    });
   };
 
   return (
@@ -90,36 +100,49 @@ export function MessagesList({ chats }: { chats: ChatPreview[] }) {
               <div
                 key={conversation.id}
                 className="flex items-center px-4 py-2 border-b border-gray-100 active:bg-gray-100"
-                onClick={() =>
-                  router.push(`/home/messages/${conversation.contactId}`)
-                }
               >
-                <Avatar className="h-12 w-12 mr-3">
-                  <AvatarImage
-                    src={contact.avatar || "/placeholder.svg"}
-                    alt={contact.name}
-                  />
-                  <AvatarFallback>{conversation.id.charAt(0)}</AvatarFallback>
-                </Avatar>
-                <div className="flex-1 min-w-0">
-                  <div className="flex justify-between items-baseline">
-                    <h3
-                      className={`font-semibold truncate  text-gray-900"
-                      `}
-                    >
-                      {contact.name}
-                    </h3>
-                    <span className="text-xs text-gray-500 ml-2 whitespace-nowrap">
-                      {formatTimestamp(new Date(conversation.createdAt))}
-                    </span>
+                <div
+                  className="flex items-center flex-1 min-w-0"
+                  onClick={() =>
+                    router.push(`/home/messages/${conversation.contactId}`)
+                  }
+                >
+                  <Avatar className="h-12 w-12 mr-3">
+                    <AvatarImage
+                      src={contact.avatar || "/placeholder.svg"}
+                      alt={contact.name}
+                    />
+                    <AvatarFallback>{conversation.id.charAt(0)}</AvatarFallback>
+                  </Avatar>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex justify-between items-baseline">
+                      <h3 className={`font-semibold truncate text-gray-900`}>
+                        {contact.name}
+                      </h3>
+                      <span className="text-xs text-gray-500 ml-2 whitespace-nowrap">
+                        {formatTimestamp(new Date(conversation.createdAt))}
+                      </span>
+                    </div>
+                    <p className={`text-sm truncate text-gray-500`}>
+                      {conversation.lastMessage}
+                    </p>
                   </div>
-                  <p
-                    className={`text-sm truncate 
-                     "text-gray-500"`}
-                  >
-                    Click to access the messages
-                  </p>
                 </div>
+                {session?.user.admin && (
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => handleDelete(conversation.contactId)}
+                    disabled={isPending}
+                    className="ml-2"
+                  >
+                    {isPending ? (
+                      <Loader2 className="h-5 w-5 animate-spin" />
+                    ) : (
+                      <Trash2 className="h-5 w-5 text-red-500" />
+                    )}
+                  </Button>
+                )}
               </div>
             );
           })

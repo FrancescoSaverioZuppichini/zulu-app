@@ -4,8 +4,26 @@ import { Chat, ChatPreview } from "@/types/types";
 import { MyUIMessage } from "./types";
 
 export async function getUserChats(userId: string): Promise<ChatPreview[]> {
-    const chats = await redis.lrange<ChatPreview>(`user:${userId}:chats`, 0, -1);
-    return chats
+  const chatPreviews = await redis.lrange<ChatPreview>(
+    `user:${userId}:chats`,
+    0,
+    -1,
+  );
+  const chats = await Promise.all(
+    chatPreviews.map(async (preview) => {
+      const chat = await redis.get<Chat>(`chat:${userId}:${preview.contactId}`);
+      const lastMessage = chat?.messages?.at(-1);
+      const lastMessageContent =
+        lastMessage?.parts.at(-1)?.type === "text"
+          ? lastMessage?.parts.at(-1).text
+          : "";
+      return {
+        ...preview,
+        lastMessage: lastMessageContent,
+      };
+    }),
+  );
+  return chats;
 }
 
 export async function getUserChat(userId: string, contactId: string): Promise<Chat | null> {
