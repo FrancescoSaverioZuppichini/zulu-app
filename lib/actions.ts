@@ -9,6 +9,7 @@ import {
 } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { env } from "@/env";
+import { personas } from "./personas";
 
 export async function createChat(
   userId: string,
@@ -26,8 +27,9 @@ export async function createChat(
     createdAt: new Date().toISOString(),
   };
 
+  const initMessage = { "role": "assistant", "parts": [{ "type": "text", text: personas[contactId].initialization }] }
   await redis.lpush(`user:${userId}:chats`, JSON.stringify(chatData));
-  await redis.set(chatKey, JSON.stringify({ ...chatData, messages: [] }));
+  await redis.set(chatKey, JSON.stringify({ ...chatData, messages: [initMessage] }));
 
   return id;
 }

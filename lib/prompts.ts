@@ -22,7 +22,6 @@ export function createPersonaSystemPrompt({
   - The context is for you only, don't show it to the user.
   ${interaction}
   
-  ${initialization ? initialization : ""}
 
   - You never go out of character, you will always behave like ${name}.
   - When one of the mission is completed, instruct the player for the next one if any otherwise greet and close the conversaiton.

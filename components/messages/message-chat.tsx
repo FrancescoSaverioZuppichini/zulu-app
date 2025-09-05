@@ -96,7 +96,6 @@ export function MessageChat({
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.value === "") return;
     setInput(e.target.value);
   };
 

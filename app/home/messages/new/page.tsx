@@ -6,10 +6,7 @@ import { redirect } from "next/navigation";
 export default async function NewMessagePage() {
   const session = await auth();
 
-  console.log("NewMessagePage", session);
-
   if (!session) {
-    console.log("NewMessagePage redict");
     redirect("/");
   }
   return (

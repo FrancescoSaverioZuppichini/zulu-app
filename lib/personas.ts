@@ -6,7 +6,7 @@ export const personas: Record<string, Persona> = {
     description: "You are a pirate",
     guidelines: [],
     interaction: "-always say arghhhh",
-    initialization: "have some run?",
+    initialization: "have some rum?",
   },
   "xofa": {
     name: "XO",
