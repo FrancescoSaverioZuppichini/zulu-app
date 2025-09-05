@@ -1,4 +1,6 @@
-import { signIn } from "@/lib/auth";
+"use client";
+
+import { signInAction } from "@/lib/actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -11,8 +13,12 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { redirect } from "next/navigation";
+import { useTransition } from "react";
+import { Loader2 } from "lucide-react";
 
 export function LoginForm() {
+  const [isPending, startTransition] = useTransition();
+
   return (
     <div className="flex items-center justify-center h-full p-4">
       <Card className="w-full">
@@ -23,21 +29,10 @@ export function LoginForm() {
           </CardDescription>
         </CardHeader>
         <form
-          action={async (formData) => {
-            "use server";
-            try {
-              await signIn("credentials", {
-                username: formData.get("username"),
-                password: formData.get("password"),
-                redirectTo: "/home",
-              });
-            } catch (error) {
-              if (error instanceof Error && error.message === "NEXT_REDIRECT") {
-                throw error; // Re-throw redirects
-              }
-              console.error(error);
-              redirect("/auth/error?error=CredentialsSignin");
-            }
+          action={(formData) => {
+            startTransition(async () => {
+              await signInAction(formData);
+            });
           }}
         >
           <CardContent className="space-y-4">
@@ -48,6 +43,7 @@ export function LoginForm() {
                 name="username"
                 placeholder="Enter your username"
                 required
+                disabled={isPending}
               />
             </div>
             <div className="space-y-2">
@@ -58,11 +54,13 @@ export function LoginForm() {
                 type="password"
                 placeholder="Enter password"
                 required
+                disabled={isPending}
               />
             </div>
           </CardContent>
           <CardFooter>
-            <Button type="submit" className="w-full">
+            <Button type="submit" className="w-full" disabled={isPending}>
+              {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Sign In
             </Button>
           </CardFooter>

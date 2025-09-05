@@ -2,11 +2,28 @@
 import { redis } from "./db";
 import { Chat, ChatPreview } from "@/types/types";
 import { r2 } from "./r2";
-import { auth } from "@/lib/auth";
+import { auth, signIn } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 
 import { env } from "@/env";
 import { personas } from "./personas";
+
+export async function signInAction(formData: FormData) {
+  try {
+    await signIn("credentials", {
+      username: formData.get("username"),
+      password: formData.get("password"),
+      redirectTo: "/home",
+    });
+  } catch (error) {
+    if (error instanceof Error && error.message === "NEXT_REDIRECT") {
+      throw error; // Re-throw redirects
+    }
+    console.error(error);
+    redirect("/auth/error?error=CredentialsSignin");
+  }
+}
 
 export async function deleteChat(userId: string, contactId: string) {
   const chatKey = `chat:${userId}:${contactId}`;

@@ -128,7 +128,7 @@ export function MessagesList({ chats }: { chats: ChatPreview[] }) {
                     </p>
                   </div>
                 </div>
-                {session?.user.admin && (
+                {session?.user.admin === true && (
                   <Button
                     variant="ghost"
                     size="icon"

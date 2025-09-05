@@ -36,6 +36,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
         // Check if the password matches our environment variable
         const isValidPassword = credentials.password === env.APP_PASSWORD;
+        console.log("ADMIN", (credentials.username as string).endsWith("_admin"))
 
         if (isValidUsername && isValidPassword) {
           return {

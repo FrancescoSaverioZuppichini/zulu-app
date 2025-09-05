@@ -8,9 +8,11 @@ import { ContactsProvider } from "@/providers/contacts-provider";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: "iPhone App",
-  description: "iPhone-style app with messaging",
-  generator: "v0.dev",
+  title: "Zulu App",
+  description: "Pronti per la prossima avventura?",
+  icons: {
+    icon: [{ url: "logo.png", type: "image/png" }],
+  },
 };
 
 export default function RootLayout({
