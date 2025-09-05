@@ -59,7 +59,7 @@ export async function uploadImage(formData: FormData) {
   const putCommand = new PutObjectCommand({
     Bucket: env.R2_BUCKET_NAME,
     Key: key,
-    Body: Buffer.from(await file.arrayBuffer()),
+    Body: new Uint8Array(await file.arrayBuffer()),
     ContentType: contentType,
   });
   await s3.send(putCommand);
