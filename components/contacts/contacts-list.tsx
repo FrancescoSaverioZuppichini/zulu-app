@@ -39,9 +39,7 @@ export function ContactsList({ user }: { user: Session["user"] }) {
 
       <div className="flex-1 overflow-auto">
         {contacts
-          .filter((contact) =>
-            contact.id.startsWith(user.name.split("_").at(0) || "")
-          )
+          .filter((contact) => contact.id === user.name.split("_").at(0) || "")
           .map((contact) => (
             <div
               key={contact.id}
