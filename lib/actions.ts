@@ -1,13 +1,8 @@
 "use server";
 import { redis } from "./db";
 import { Chat } from "@/types/types";
-import { s3 } from "./s3";
-import {
-  PutObjectCommand,
-  DeleteObjectCommand,
-  GetObjectCommand,
-} from "@aws-sdk/client-s3";
-import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import { r2 } from "./r2";
+
 import { env } from "@/env";
 import { personas } from "./personas";
 
@@ -45,41 +40,43 @@ export async function resetUserChatProgress(userId: string, contactId: string) {
   await redis.del(key);
 }
 
+const R2_URL = `https://${env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`;
+
 export async function uploadImage(formData: FormData) {
   const file = formData.get("image") as File;
-  if (!file) {
-    throw new Error("No file provided");
+  if (!file) throw new Error("No file provided");
+
+  const key = `chats/${crypto.randomUUID()}-${file.name}`;
+  const arrayBuffer = await file.arrayBuffer();
+
+  // Upload with aws4fetch
+  const uploadResponse = await r2.fetch(`${R2_URL}/${env.R2_BUCKET_NAME}/${key}`, {
+    method: "PUT",
+    body: arrayBuffer,
+    headers: {
+      "Content-Type": file.type,
+    },
+  });
+
+  if (!uploadResponse.ok) {
+    throw new Error(`Upload failed: ${uploadResponse.status}`);
   }
-  const filename = file.name;
-  const contentType = file.type;
 
-  const key = `chats/${crypto.randomUUID()}-${filename}`;
+  // Generate signed URL for viewing (7 days)
+  const signedRequest = await r2.sign(
+    new Request(`${R2_URL}/${env.R2_BUCKET_NAME}/${key}?X-Amz-Expires=604800`),
+    { aws: { signQuery: true } }
+  );
 
-  // Upload the file
-  const putCommand = new PutObjectCommand({
-    Bucket: env.R2_BUCKET_NAME,
-    Key: key,
-    Body: new Uint8Array(await file.arrayBuffer()),
-    ContentType: contentType,
-  });
-  await s3.send(putCommand);
-
-  // Get a signed URL for viewing
-  const getCommand = new GetObjectCommand({
-    Bucket: env.R2_BUCKET_NAME,
-    Key: key,
-  });
-  // The URL will be valid for 7 days.
-  const url = await getSignedUrl(s3, getCommand, { expiresIn: 604800 });
-
-  return { key, url };
+  return { key, url: signedRequest.url };
 }
 
 export async function deleteImage(key: string) {
-  const command = new DeleteObjectCommand({
-    Bucket: env.R2_BUCKET_NAME,
-    Key: key,
+  const response = await r2.fetch(`${R2_URL}/${env.R2_BUCKET_NAME}/${key}`, {
+    method: "DELETE",
   });
 
-  await s3.send(command);
+  if (!response.ok) {
+    throw new Error(`Delete failed: ${response.status}`);
+  }
 }
