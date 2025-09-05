@@ -1,6 +1,6 @@
 "use server";
 import { redis } from "./db";
-import { Chat } from "@/types/types";
+import { Chat, ChatPreview } from "@/types/types";
 import { r2 } from "./r2";
 import { auth } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
@@ -40,13 +40,14 @@ export async function createChat(
   if (existingChat) {
     return existingChat.id;
   }
-  const chatData = {
+  const initMessage = { "role": "assistant", "parts": [{ "type": "text", text: personas[contactId].initialization }] }
+  const chatData: ChatPreview = {
     id,
     contactId,
-    createdAt: new Date().toISOString(),
+    createdAt: new Date(),
+    lastMessage: personas[contactId].initialization || ''
   };
 
-  const initMessage = { "role": "assistant", "parts": [{ "type": "text", text: personas[contactId].initialization }] }
   await redis.lpush(`user:${userId}:chats`, JSON.stringify(chatData));
   await redis.set(chatKey, JSON.stringify({ ...chatData, messages: [initMessage] }));
 
