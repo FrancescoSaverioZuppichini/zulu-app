@@ -14,12 +14,12 @@ export default async function ChatPage({
 
   const session = await auth();
 
-  if (!session?.user) {
+  if (!session || !session.user) {
     console.log("ChatPage redict");
     redirect("/");
   }
 
-  const chat = await getUserChat(session?.user?.name || "unkown", contactId);
+  const chat = await getUserChat(session.user.name, contactId);
   if (!chat) return notFound();
 
   const contact = getContactById(contactId);
@@ -35,8 +35,8 @@ export default async function ChatPage({
         <MessageChat
           chat={chat}
           contact={contact}
-          userId={session?.user?.name || "unkown"}
-          isAdmin={session?.user.admin}
+          userId={session.user.name}
+          isAdmin={session.user.admin}
         />
       </div>
     </main>

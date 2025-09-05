@@ -1,22 +1,19 @@
 import { cn } from "@/lib/utils";
-import { UIMessage } from "ai";
-import { MemoizedMarkdown } from "./memoized-markdown";
+import { MyUIMessage } from "@/lib/types";
+import { MessagePart } from "./message-part";
 
 const formatMessageTime = (date: Date) => {
   return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 };
 
-export default function Message({ message }: { message: UIMessage }) {
-  const imageAttachments =
-    message.experimental_attachments?.filter((attachment) =>
-      attachment.contentType?.startsWith("image/")
-    ) || [];
+export default function Message({ message }: { message: MyUIMessage }) {
+  const createdAt = message.metadata?.createdAt as Date || new Date();
 
   return (
     <div key={message.id} className="space-y-1 mb-4">
       <div className="flex justify-center mb-2">
         <div className="bg-gray-200 text-gray-500 text-xs px-2 py-1 rounded-full">
-          {new Date(message.createdAt || Date.now()).toLocaleDateString([], {
+          {new Date(createdAt).toLocaleDateString([], {
             weekday: "short",
             month: "short",
             day: "numeric",
@@ -37,33 +34,16 @@ export default function Message({ message }: { message: UIMessage }) {
               : "bg-gray-300 text-black rounded-tl-sm"
           }`}
         >
-          {/* Image attachments */}
-          {imageAttachments.length > 0 && (
-            <div className="mb-2">
-              {imageAttachments.map((attachment, index) => (
-                <div key={`${message.id}-${index}`} className="mb-2 last:mb-0">
-                  <img
-                    src={attachment.url}
-                    alt={attachment.name || "Image attachment"}
-                    className="max-w-full h-auto rounded-lg shadow-sm"
-                    style={{ maxHeight: "200px" }}
-                  />
-                </div>
-              ))}
-            </div>
-          )}
-
-          {/* Text content */}
-          {message.content && (
-            <MemoizedMarkdown content={message.content} id={message.id} />
-          )}
+          {message.parts.map((part, index) => (
+            <MessagePart key={`${message.id}-${index}`} part={part} id={message.id} />
+          ))}
 
           <div
             className={`text-[10px] ${
               message.role === "user" ? "text-blue-100" : "text-gray-500"
             } mt-1 text-right`}
           >
-            {formatMessageTime(new Date(message.createdAt || Date.now()))}
+            {formatMessageTime(new Date(createdAt))}
           </div>
         </div>
       </div>

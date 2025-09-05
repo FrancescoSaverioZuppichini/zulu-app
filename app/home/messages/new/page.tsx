@@ -6,16 +6,13 @@ import { redirect } from "next/navigation";
 export default async function NewMessagePage() {
   const session = await auth();
 
-  console.log("NewMessagePage", session);
-
-  if (!session?.user) {
-    console.log("NewMessagePage redict");
+  if (!session) {
     redirect("/");
   }
   return (
-    <div className="grid flex-col h-full">
+    <div className=" flex-col h-full">
       <StatusBar />
-      <ContactSelector />
+      <ContactSelector user={session.user} />
     </div>
   );
 }

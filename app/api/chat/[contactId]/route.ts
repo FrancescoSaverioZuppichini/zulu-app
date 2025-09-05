@@ -4,13 +4,14 @@ import { createPersonaSystemPrompt } from "@/lib/prompts";
 import { tools } from "@/lib/tools";
 import { google } from "@ai-sdk/google";
 
-import { appendResponseMessages, streamText } from "ai";
+import { convertToModelMessages, hasToolCall, streamText, UIMessage } from "ai";
 import { NextResponse } from "next/server";
 import { openai } from '@ai-sdk/openai';
 import { Mission } from "@/types/types";
 import { missions } from "@/lib/missions";
 import { auth } from "@/lib/auth";
 import { getUserActiveMissions } from "@/lib/utils";
+import { MyUIMessage } from "@/lib/types";
 
 
 
@@ -20,7 +21,8 @@ export async function POST(
   req: Request,
   { params }: { params: Promise<{ contactId: string }> }
 ) {
-  const { messages } = await req.json();
+  const { messages }: { messages: MyUIMessage[] } = await req.json();
+
   const session = await auth()
   if (!session?.user) return NextResponse.json({ error: "Unauthorize" }, { status: 403 })
   const { contactId } = await params;
@@ -29,40 +31,28 @@ export async function POST(
   const completedMissionsIds = await getUserMission(userId, contactId)
   const userMissions = missions[userId]
   let activeMissions = getUserActiveMissions(userMissions, completedMissionsIds)
-  // if (completedMissionsIds.length === 0) {
-  //   activeMissions = userMissions.filter(mission => mission.required_missions.length === 0)
-  // }
-  // else {
-
-  // activeMissions = userMissions.filter(mission => {
-  //   if (mission.required_missions.length === 0) return false
-  //   return mission.required_missions.every(requiredId =>
-  //     completedMissionsIds.includes(requiredId) && !completedMissionsIds.includes(mission.mission_id)
-  //   );
-  // });
-  // }
-
   console.log("[chat] activeMissions", activeMissions)
   console.log("[chat] completedMissionsIds", completedMissionsIds)
+  console.log(messages)
   // google("gemini-2.5-flash-preview-04-17"),
   const result = streamText({
     system: createPersonaSystemPrompt(personas[contactId], activeMissions),
-    maxSteps: 4,
+    stopWhen: hasToolCall('introduce_next_missions'),
     // model: openai("gpt-4o-mini"),
     model: google("gemini-2.5-flash"),
-    messages,
-    tools: tools(userId, contactId, completedMissionsIds),
-    async onFinish({ response }) {
+    messages: convertToModelMessages(messages),
+    tools: { mission_tracker: tools.mission_tracker(userId, contactId, completedMissionsIds), introduce_next_missions: tools.introduce_next_missions },
+    onError: (err) => console.error(err),
+  });
+
+
+  return result.toUIMessageStreamResponse<MyUIMessage>({
+    originalMessages: messages, onFinish: async ({ messages }) => {
       await saveUserChat(
         session?.user?.name || "unknown",
         contactId,
-        appendResponseMessages({
-          messages,
-          responseMessages: response.messages,
-        }),
+        messages
       );
-    },
+    }
   });
-
-  return result.toDataStreamResponse();
 }

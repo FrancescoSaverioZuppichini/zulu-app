@@ -6,21 +6,16 @@ import { Input } from "@/components/ui/input";
 import { createChat } from "@/lib/actions";
 import { useContacts } from "@/providers/contacts-provider";
 import { ChevronLeft, Search } from "lucide-react";
+import { Session } from "next-auth";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 
-export function ContactSelector() {
+export function ContactSelector({ user }: { user: Session["user"] }) {
   const { contacts } = useContacts();
   const [pending, startTransition] = useTransition();
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
-  const { data: session } = useSession();
-
-  if (!session?.user?.name) {
-    router.push("/");
-    return;
-  }
 
   const filteredContacts = contacts.filter(
     (contact) =>
@@ -30,13 +25,9 @@ export function ContactSelector() {
 
   const selectContact = (contactId: string) => {
     startTransition(async () => {
-      if (session?.user) {
-        const chatId = await createChat(
-          session.user.name || "unkown",
-          contactId
-        );
-        router.push(`/home/messages/${contactId}`);
-      }
+      const chatId = await createChat(user.name, contactId);
+      console.log(chatId);
+      router.push(`/home/messages/${contactId}`);
     });
   };
 
@@ -83,25 +74,29 @@ export function ContactSelector() {
         <div className="px-4 py-2 text-xs text-gray-500 uppercase bg-gray-50 font-semibold">
           Suggested
         </div>
-        {filteredContacts.map((contact) => (
-          <div
-            key={contact.id}
-            className="flex items-center px-4 py-2 border-b border-gray-100 active:bg-gray-100"
-            onClick={() => selectContact(contact.id)}
-          >
-            <Avatar className="h-10 w-10 mr-3">
-              <AvatarImage
-                src={contact.avatar || "/placeholder.svg"}
-                alt={contact.name}
-              />
-              <AvatarFallback>{contact.name.charAt(0)}</AvatarFallback>
-            </Avatar>
-            <div>
-              <h3 className="font-medium">{contact.name}</h3>
-              <p className="text-xs text-gray-500">{contact.phone}</p>
+        {filteredContacts
+          .filter((contact) =>
+            contact.id.startsWith(user.name.split("_").at(0) || "")
+          )
+          .map((contact) => (
+            <div
+              key={contact.id}
+              className="flex items-center px-4 py-2 border-b border-gray-100 active:bg-gray-100"
+              onClick={() => selectContact(contact.id)}
+            >
+              <Avatar className="h-10 w-10 mr-3">
+                <AvatarImage
+                  src={contact.avatar || "/placeholder.svg"}
+                  alt={contact.name}
+                />
+                <AvatarFallback>{contact.name.charAt(0)}</AvatarFallback>
+              </Avatar>
+              <div>
+                <h3 className="font-medium">{contact.name}</h3>
+                <p className="text-xs text-gray-500">{contact.phone}</p>
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
       </div>
     </div>
   );
