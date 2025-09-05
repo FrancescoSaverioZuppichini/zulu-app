@@ -25,6 +25,7 @@ export async function deleteChat(userId: string, contactId: string) {
       ...filteredChats.map((chat) => JSON.stringify(chat)),
     );
   }
+  await resetUserChatProgress(userId, contactId)
 
   revalidatePath("/home/messages");
   return {}

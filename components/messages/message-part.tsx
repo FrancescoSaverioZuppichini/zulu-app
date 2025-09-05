@@ -33,12 +33,12 @@ export function MessagePart({
 
       return (
         <p className="font-mono text-xs bg-card p-1 mt-1 rounded-sm">
-          ✅ mission {missionId} completed!
+          ✅ mission {missionId} completed! Getting next missions...
         </p>
       );
     }
     case "tool-introduce_next_missions": {
-      const text = part.input?.text ?? "...";
+      const text = part.input?.text;
       return <p>{text}</p>;
     }
     default: {
