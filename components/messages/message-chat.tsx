@@ -17,11 +17,8 @@ import {
 import { useRouter } from "next/navigation";
 import type { Contact, MyUIMessage } from "@/lib/types";
 import { useChat } from "@ai-sdk/react";
-import { cn } from "@/lib/utils";
 import Message from "./message";
-import { text } from "stream/consumers";
 import { Chat } from "@/types/types";
-import { User } from "next-auth";
 import { toast } from "sonner";
 
 import {
@@ -50,7 +47,7 @@ export function MessageChat({
   userId,
   isAdmin = false,
 }: MessageChatProps) {
-  const { messages, status, sendMessage } = useChat<MyUIMessage>({
+  const { messages, status, sendMessage, error } = useChat<MyUIMessage>({
     messages: chat.messages,
     transport: new DefaultChatTransport({
       api: `/api/chat/${contact.id}`,
@@ -70,6 +67,10 @@ export function MessageChat({
   const fileInputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
+  useEffect(() => {
+    if (!error) return;
+    toast.error(error.name, { description: error.message });
+  }, [error]);
   // Scroll to bottom when messages change
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -279,8 +280,7 @@ export function MessageChat({
             <Button
               variant="ghost"
               type="submit"
-              size="icon"
-              className="rounded-full h-10 w-10 text-blue-500 [&_svg]:size-5"
+              className="rounded-full h-12 w-12 text-blue-500 [&_svg]:size-5"
               disabled={status !== "ready" || isUploading}
             >
               <Send className="h-4 w-4" />
@@ -290,10 +290,9 @@ export function MessageChat({
             <Button
               variant="ghost"
               type="button"
-              size={"icon"}
               onClick={handleImageButtonClick}
               disabled={status !== "ready" || isUploading}
-              className="rounded-full h-10 w-10 text-blue-500 [&_svg]:size-5"
+              className="rounded-full h-12 w-12 text-blue-500 [&_svg]:size-5"
             >
               <ImageIcon />
             </Button>

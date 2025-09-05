@@ -20,8 +20,12 @@
     "APP_PASSWORD": "napoli",
     "UPSTASH_REDIS_REST_URL": "https://hopeful-lemming-23667.upstash.io",
     "UPSTASH_REDIS_REST_TOKEN": "AVxzAAIjcDE0ZjQ0ZGYwNWI3ODU0ZmY0YTI0ODg2MjA1NDFhNDI0M3AxMA",
-    "GOOGLE_GENERATIVE_AI_API_KEY": "AIzaSyCiUE3dcpsV5wIFG8Ks-lm-UjKMFu8tq60",
-    "AUTH_TRUST_HOST": "true"
+    "GOOGLE_GENERATIVE_AI_API_KEY": "AIzaSyCdWU9P0cIf4xItbw9OcXXOxjmoK1pgt-8",
+    "AUTH_TRUST_HOST": "true",
+    "R2_ACCOUNT_ID": "30c88c8e1893979aeef493b678e011ea",
+    "R2_ACCESS_KEY_ID": "12e453c318091fdeda824a3c7b1f2dbe",
+    "R2_SECRET_ACCESS_KEY": "53c4a20bce89f2357eaf46fe886164bc5403cf3d3475aa0edd8df250a0048c58",
+    "R2_BUCKET_NAME": "zulu-app-bucket"
   },
   "r2_buckets": [
     {

@@ -13,7 +13,7 @@ export default async function NewMessagePage() {
     redirect("/");
   }
   return (
-    <div className="grid flex-col h-full">
+    <div className=" flex-col h-full">
       <StatusBar />
       <ContactSelector user={session.user} />
     </div>
