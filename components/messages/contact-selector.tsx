@@ -75,9 +75,7 @@ export function ContactSelector({ user }: { user: Session["user"] }) {
           Suggested
         </div>
         {filteredContacts
-          .filter((contact) =>
-            contact.id.startsWith(user.name.split("_").at(0) || "")
-          )
+          .filter((contact) => contact.id === user.name.split("_").at(0) || "")
           .map((contact) => (
             <div
               key={contact.id}

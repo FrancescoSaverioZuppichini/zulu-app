@@ -47,7 +47,8 @@ export async function POST(
 
 
   return result.toUIMessageStreamResponse<MyUIMessage>({
-    originalMessages: messages, onFinish: async ({ messages }) => {
+    originalMessages: messages,
+    onFinish: async ({ messages }) => {
       await saveUserChat(
         session?.user?.name || "unknown",
         contactId,
